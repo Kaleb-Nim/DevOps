@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shiok!</title>
+    <link rel="shortcut icon" href="./img/shiokie.png" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./style/main.css" />
+  </head>
+  
+  <body class="relative w-screen">
+    <div
+      class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center"
+    >
+      <div
+        class="flex flex-col w-full md:w-3/4 lg:w-2/5 items-center justify-center mx-auto gap-2"
+      >
+        <div
+          class="flex flex-col w-full md:w-3/4 lg:w-full items-center justify-center mx-auto gap-3 py-3"
+        >
+          <button
+            type="button"
+            class="text-white buttonColor w-full rounded-full p-2 text-center focus:outline-blue-500 focus:outline-2 focus:outline text-xl"
+            id="login"
+          >
+            <div class="flex gap-2 items-center justify-center">
+              <i class="bi bi-google text-2xl"></i>
+              <p>Google</p>
+            </div>
+          </button>
+          <button
+            type="button"
+            class="text-white buttonColor w-full rounded-full p-2 text-center focus:outline-blue-500 focus:outline-2 focus:outline text-xl"
+            id="guest"
+          >
+            <div
+              class="flex gap-2 items-center justify-center whitespace-nowrap"
+            >
+              <p>Continue as guest</p>
+            </div>
+          </button>
+          <button
+            type="button"
+            class="text-white buttonColor w-full rounded-full p-2 text-center focus:outline-blue-500 focus:outline-2 focus:outline text-xl"
+            id="logOut"
+          >
+            <div class="flex gap-2 items-center justify-center">
+              <p>Sign Out</p>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Firebase -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-app.js";
+      import {
+        getFirestore,
+        doc,
+        setDoc,
+        getDoc,
+      } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-firestore.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-analytics.js";
+      import {
+        getAuth,
+        GoogleAuthProvider,
+        signInWithRedirect,
+        getRedirectResult,
+        signInWithPopup,
+        signOut,
+        signInAnonymously,
+        setPersistence,
+        browserLocalPersistence,
+      } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-auth.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyA-67sEFdlanL0T9V1mQmgIg3534LT1iFg",
+        authDomain: "shiokah.firebaseapp.com",
+        projectId: "shiokah",
+        storageBucket: "shiokah.appspot.com",
+        messagingSenderId: "946796488017",
+        appId: "1:946796488017:web:3b9770ac6f2116fdfc5f70",
+        measurementId: "G-K5MJFKJVYX",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+      const auth = getAuth(app);
+      const provider = new GoogleAuthProvider(app);
+      const firestore = getFirestore();
+      // Check if account is already login
+      if (localStorage.getItem("uid") && localStorage.getItem("userObj")) {
+        login.classList.add("hidden");
+        guest.classList.add("hidden");
+        window.location.href = "./swipe.html";
+      } else {
+        logOut.classList.add("hidden");
+      }
+      const checkUser = async (user, type) => {
+        const dataRow = doc(firestore, `user/${user.uid}`);
+        var dataRowValue = await getDoc(dataRow);
+        var firstTime = false;
+        if (!dataRowValue.exists()) {
+          var data = {
+            acorns: 30,
+            member: false,
+            type: type,
+            pfp:
+              user.photoURL ||
+              "https://raw.githubusercontent.com/UltraRaptorYT/SPIT/main/server/img/default.png",
+          };
+          localStorage.setItem(`acorns`, data.acorns);
+          try {
+            await setDoc(dataRow, data, { merge: true });
+          } catch (error) {
+            console.error(error);
+            return false;
+          }
+          dataRowValue = await getDoc(dataRow);
+          firstTime = true;
+        }
+        console.log(dataRowValue.data());
+        localStorage.setItem("result", JSON.stringify(user));
+        localStorage.setItem("userObj", JSON.stringify(dataRowValue.data()));
+        localStorage.setItem("uid", user.uid);
+        login.classList.add("hidden");
+        guest.classList.add("hidden");
+        logOut.classList.remove("hidden");
+        if (firstTime && type != "Guest") {
+          window.location.href = "./info.html";
+        } else if (type == "Guest") {
+          window.location.href = "./swipe.html";
+        } else {
+          window.location.href = "./dashboard.html";
+        }
+        return;
+      };
+      guest.addEventListener("click", async (e) => {
+        setPersistence(auth, browserLocalPersistence)
+          .then(() => {
+            // Existing and future Auth states are now persisted in the current
+            // session only. Closing the window would clear any existing state even
+            // if a user forgets to sign out.
+            // ...
+            // New sign-in will be persisted with session persistence.
+            return signInAnonymously(auth)
+              .then(async (result) => {
+                const user = result.user;
+                await checkUser(user, "Guest");
+              })
+              .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.error(errorMessage);
+              });
+          })
+          .catch((error) => {
+            // Handle Errors here.
+            const errorCode = error.code;
+            const errorMessage = error.message;
+          });
+      });
+      login.addEventListener("click", async (e) => {
+        setPersistence(auth, browserLocalPersistence)
+          .then(() => {
+            // Existing and future Auth states are now persisted in the current
+            // session only. Closing the window would clear any existing state even
+            // if a user forgets to sign out.
+            // ...
+            // New sign-in will be persisted with session persistence.
+            return signInWithPopup(auth, provider)
+              .then(async (result) => {
+                const credential =
+                  GoogleAuthProvider.credentialFromResult(result);
+                const token = credential.accessToken;
+                const user = result.user;
+                await checkUser(user, "Gmail");
+              })
+              .catch((error) => {
+                // Handle Errors here.
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                // The email of the user's account used.
+                const email = error.email;
+                // The AuthCredential type that was used.
+                const credential =
+                  GoogleAuthProvider.credentialFromError(error);
+                // ...
+                console.error(errorMessage);
+              });
+          })
+          .catch((error) => {
+            // Handle Errors here.
+            const errorCode = error.code;
+            const errorMessage = error.message;
+          });
+      });
+      logOut.addEventListener("click", (e) => {
+        signOut(auth)
+          .then(() => {
+            // Sign-out successful.
+            localStorage.removeItem("uid");
+            localStorage.removeItem("uid");
+            login.classList.remove("hidden");
+            guest.classList.remove("hidden");
+            logOut.classList.add("hidden");
+          })
+          .catch((error) => {
+            // An error happened.
+          });
+      });
+    </script>
+    <script>
+      let vh = 0.01 * window.innerHeight;
+      console.log(vh),
+        document.documentElement.style.setProperty("--vh", vh + "px");
+    </script>
+  </body>
+</html>

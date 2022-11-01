@@ -6,10 +6,9 @@ import tensorflow as tf
 from streamlit_drawable_canvas import st_canvas
 from PIL import Image
 import pandas as pd
-import time
-import base64
 from pathlib import Path
 import numpy as np
+# from utilis import buildPrediction
 
 ### Streamlit code (works as a straigtht-forward script) ###
 st.title("Welcome to Kaleb's DevOps CA1 Assignment ​🧑‍⚕️​🩺​")
@@ -47,16 +46,14 @@ st.write('You selected:', age, bmi, isSmoker,gender,region)
 
 pred_button = st.button("Predict")
 
-prediction = (
-    0.1,
-    0.4,
-    0.6,
-    0,
-    1,
-    1,
-    0,
-    0
-)
+prediction = {
+    "age": 1,
+    "bmi": 0.4,
+    "children": 0.6,
+    "sex":"female",
+    "smoker":"no",
+    "region": "southeast"
+}
 
 df = pd.DataFrame(
    np.random.randn(10, 5),
@@ -65,5 +62,6 @@ df = pd.DataFrame(
 # Did the user press the predict button?
 data = ()
 if pred_button:
+    prediction = buildPrediction(age = age, bmi = bmi, children = 0, smoker = isSmoker, region = region)
     st.table(df)
 

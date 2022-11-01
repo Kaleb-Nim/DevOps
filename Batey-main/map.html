@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Route finder</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Import Mapbox GL JS -->
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.js"></script>
+    <link
+      href="https://api.tiles.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: "Open Sans", sans-serif;
+      }
+
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+      }
+    </style>
+    <!-- Import Mapbox GL Directions -->
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.0.2/mapbox-gl-directions.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.0.2/mapbox-gl-directions.css"
+      type="text/css"
+    />
+  </head>
+
+  <body>
+    <div id="map"></div>
+
+    <script>
+      mapboxgl.accessToken =
+        "pk.eyJ1IjoidWx0cmFyYXB0b3IiLCJhIjoiY2t0cGo5aThxMGFxMzJybXBiNmZ3bWY4eSJ9.q24IUWxYYm6DhTDn5pY2Rg";
+      const map = new mapboxgl.Map({
+        container: "map", // Specify the container ID
+        style: "mapbox://styles/mapbox/light-v10", // Specify which map style to use
+        center: [103.7775, 1.3098], // Specify the starting position [lng, lat]
+        zoom: 20, // Specify the starting zoom
+      });
+      const directions = new MapboxDirections({
+        accessToken: mapboxgl.accessToken,
+        unit: "metric",
+        profile: "mapbox/walking",
+        alternatives: true,
+        geometries: "geojson",
+        controls: { instructions: false },
+        flyTo: false,
+      });
+
+      map.addControl(directions, "top-left");
+      map.scrollZoom.enable();
+      const clearances = {
+        type: "FeatureCollection",
+        features: [
+          {
+            type: "Feature",
+            geometry: {
+              type: "Point",
+              coordinates: [103.7775, 1.3098],
+            },
+            properties: {
+              clearance: "13' 2",
+            },
+          },
+          {
+            type: "Feature",
+            geometry: {
+              type: "Point",
+              coordinates: [-84.47208, 38.06694],
+            },
+            properties: {
+              clearance: "13' 7",
+            },
+          },
+          {
+            type: "Feature",
+            geometry: {
+              type: "Point",
+              coordinates: [-84.60485, 38.12184],
+            },
+            properties: {
+              clearance: "13' 7",
+            },
+          },
+          {
+            type: "Feature",
+            geometry: {
+              type: "Point",
+              coordinates: [-84.61905, 37.87504],
+            },
+            properties: {
+              clearance: "12' 0",
+            },
+          },
+          {
+            type: "Feature",
+            geometry: {
+              type: "Point",
+              coordinates: [-84.55946, 38.30213],
+            },
+            properties: {
+              clearance: "13' 6",
+            },
+          },
+          {
+            type: "Feature",
+            geometry: {
+              type: "Point",
+              coordinates: [-84.27235, 38.04954],
+            },
+            properties: {
+              clearance: "13' 6",
+            },
+          },
+          {
+            type: "Feature",
+            geometry: {
+              type: "Point",
+              coordinates: [-84.27264, 37.82917],
+            },
+            properties: {
+              clearance: "11' 6",
+            },
+          },
+        ],
+      };
+      const obstacle = turf.buffer(clearances, 0.25, { units: "kilometers" });
+      const bbox = [0, 0, 0, 0];
+      const polygon = turf.bboxPolygon(bbox);
+      map.on("load", () => {
+        map.addLayer({
+          id: "clearances",
+          type: "fill",
+          source: {
+            type: "geojson",
+            data: obstacle,
+          },
+          layout: {},
+          paint: {
+            "fill-color": "#f03b20",
+            "fill-opacity": 1,
+            "fill-outline-color": "#f03b20",
+          },
+        });
+      });
+    </script>
+  </body>
+</html>

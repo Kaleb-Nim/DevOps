@@ -47,3 +47,13 @@ def preProcess(json_data,main_df=df):
     
     # Return the final dataframe and original dataframe
     return df_final, df
+
+
+def buildPrediction(age,sex,bmi,children,smoker,region):
+    return dict({
+            "age": age,
+            "bmi": bmi,
+            "children": children,
+            "smoker": smoker,
+            "region": region,
+    })

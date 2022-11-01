@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="./img/shiokie.png" />
+    <title>Shiok!</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      src="https://kit.fontawesome.com/825a35d965.js"
+      crossorigin="anonymous"
+    ></script>
+    <link rel="stylesheet" href="./style/main.css" />
+    <script src="https://raw.githubusercontent.com/mebjas/html5-qrcode/master/minified/html5-qrcode.min.js"></script>
+  </head>
+  <body>
+    <header
+      class="flex justify-between px-4 py-2 items-center measure md:max-w-lg mx-auto bg-slate-200 measure"
+    >
+      <h1 class="text-xl font-bold">Swipe with Friends</h1>
+      <div class="logo aspect-square">
+        <img src="./img/logo.png" alt="logo" class="w-full h-full" />
+      </div>
+    </header>
+    <div
+      class="height container md:max-w-lg mx-auto flex flex-col gap-5 bg-slate-200"
+      id="body"
+    >
+      <div
+        class="mainBG h-full rounded-tl-[25px] rounded-tr-[25px] p-4"
+        id="content"
+      >
+        <div class="flex flex-col gap-3 h-full overflow-y-auto">
+          <h1 class="text-lg font-bold py-2">Party Mode</h1>
+          <button
+            type="button"
+            class="text-white buttonColor w-full rounded-full p-2 text-center focus:outline-blue-500 focus:outline-2 focus:outline text-xl"
+            id="startParty"
+          >
+            Start Party
+          </button>
+          <button
+            type="button"
+            class="text-white buttonColor w-full rounded-full p-2 text-center focus:outline-blue-500 focus:outline-2 focus:outline text-xl"
+            data-toggle="modal"
+            data-target="#joinCode"
+          >
+            Join Party
+          </button>
+          <h1 class="text-lg font-bold py-2">Don't have a party?</h1>
+          <button
+            type="button"
+            onclick="alert(`Work in Progress`)"
+            class="text-white buttonColor w-full rounded-full p-2 text-center focus:outline-blue-500 focus:outline-2 focus:outline text-xl"
+          >
+            Connect with People
+          </button>
+          <img
+            src="./img/shiokie.png"
+            alt="Shiokie"
+            class="w-2/5 mx-auto mt-auto"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div
+      class="modal hidden fixed top-0 left-0 w-full h-full outline-none fade"
+      id="qrModal"
+      tabindex="-1"
+      role="dialog"
+    >
+      <div
+        class="modal-dialog relative w-auto pointer-events-none max-w-lg my-36 mx-auto px-4 sm:px-0"
+        role="document"
+      >
+        <div
+          class="relative flex flex-col w-4/5 mx-auto pointer-events-auto bg-white border border-gray-300 rounded-lg"
+        >
+          <div
+            class="flex items-start justify-end p-4 border-gray-300 rounded-t"
+          >
+            <h5
+              class="mb-0 text-lg leading-normal mx-auto font-bold"
+              id="partyCode"
+            >
+              Party Code:&nbsp;<span></span>
+            </h5>
+            <button type="button" class="close" data-dismiss="modal">
+              &times;
+            </button>
+          </div>
+          <div class="relative flex px-4 flex-col pb-4 gap-2">
+            <img
+              src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://shiok.web.app/party"
+              alt="qrCode"
+              id="qrCode"
+              class="w-5/6 mx-auto p-2"
+            />
+            <button
+              type="button"
+              id="copyToClip"
+              class="text-white buttonColor w-full rounded-full py-2 text-center flex gap-2 justify-center px-3 focus:outline-blue-500 focus:outline-2 focus:outline text-md"
+            >
+              <i class="bi bi-share"></i>
+              <p>Share with Friends</p>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- joinCode -->
+    <div
+      class="modal hidden fixed top-0 left-0 w-full h-full outline-none fade"
+      id="joinCode"
+      tabindex="-1"
+      role="dialog"
+    >
+      <div
+        class="modal-dialog relative w-auto pointer-events-none max-w-lg my-36 mx-auto px-4 sm:px-0"
+        role="document"
+      >
+        <div
+          class="relative flex flex-col mx-auto pointer-events-auto bg-white border border-gray-300 rounded-lg"
+        >
+          <div
+            class="flex items-start justify-end p-4 border-gray-300 rounded-t"
+          >
+            <button type="button" class="close" data-dismiss="modal">
+              &times;
+            </button>
+          </div>
+          <div class="relative flex px-4 flex-col pb-4 gap-2">
+            <div id="video-container" class="aspect-[4/3]">
+              <video id="qr-video" class="w-full h-full object-cover"></video>
+            </div>
+            <div class="flex gap-1">
+              <input
+                class="w-full rounded-full p-1 text-center font-bold focus:outline-blue-500 focus:outline-2 focus:outline border-2"
+                type="text"
+                placeholder="Party Code"
+                id="code"
+                required
+              />
+              <button
+                class="button border-2 rounded-full aspect-square w-1/6"
+                id="paste"
+              >
+                <i class="fa-regular fa-paste"></i>
+              </button>
+            </div>
+            <button
+              type="button"
+              class="text-white buttonColor w-full rounded-full p-2 text-center focus:outline-blue-500 focus:outline-2 focus:outline text-lg"
+              id="joinParty"
+            >
+              Join Party
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- mealSettings -->
+    <div
+      class="modal hidden fixed top-0 left-0 w-full h-full outline-none fade"
+      id="mealSettings"
+      tabindex="-1"
+      role="dialog"
+    >
+      <div
+        class="modal-dialog relative w-auto pointer-events-none max-w-lg my-36 mx-auto px-4 sm:px-0"
+        role="document"
+      >
+        <div
+          class="relative flex flex-col w-4/5 mx-auto pointer-events-auto bg-white border border-gray-300 rounded-lg"
+        >
+          <div
+            class="flex items-start justify-end p-4 border-gray-300 rounded-t"
+          >
+            <h5
+              class="mb-0 text-lg leading-normal mx-auto font-bold"
+              id="partyCode"
+            >
+              Meal Settings
+            </h5>
+            <button type="button" class="close" data-dismiss="modal">
+              &times;
+            </button>
+          </div>
+          <div class="relative flex px-4 flex-col pb-4 gap-2">
+            <p>Price Point</p>
+            <input type="range" min="1" max="100" step="0.5" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer
+      class="px-2 py-3 w-full md:max-w-lg mx-auto bg-slate-200 fixed md:left-0.5 md:right-0.5 bottom-0 rounded-tl-[25px] rounded-tr-[25px] flex gap-2 justify-evenly measure"
+    >
+      <a
+        class="flex flex-col justify-center h-full aspect-square items-center"
+        href="./dashboard.html"
+      >
+        <img
+          class="aspect-square icon mx-auto"
+          src="./img/dashboard.png"
+          alt=""
+        />
+        <p class="text-center text-xs font-weight-bold whitespace-normal">
+          Dashboard
+        </p>
+      </a>
+      <a
+        class="flex flex-col justify-center h-full aspect-square items-center"
+        href="./party.html"
+      >
+        <img class="aspect-square icon mx-auto" src="./img/party.png" alt="" />
+        <p class="text-center text-xs font-weight-bold whitespace-normal">
+          Party
+        </p>
+      </a>
+      <a
+        class="flex flex-col justify-center h-full aspect-square items-center"
+        href="./swipe.html"
+      >
+        <img class="aspect-square icon mx-auto" src="./img/acorn.png" alt="" />
+        <p class="text-center text-xs font-weight-bold whitespace-normal">
+          Shiok
+        </p>
+      </a>
+      <a
+        class="flex flex-col justify-center h-full aspect-square items-center"
+        href=""
+      >
+        <img
+          class="aspect-square icon mx-auto"
+          src="./img/notification.png"
+          alt=""
+        />
+        <p class="text-center text-xs font-weight-bold whitespace-normal">
+          Notification
+        </p>
+      </a>
+      <a
+        class="flex flex-col justify-center h-full aspect-square items-center"
+        href=""
+      >
+        <img class="aspect-square icon mx-auto" src="./img/user.png" alt="" />
+        <p class="text-center text-xs font-weight-bold whitespace-normal">
+          Profile
+        </p>
+      </a>
+    </footer>
+    <script
+      src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
+      crossorigin="anonymous"
+    ></script>
+
+    <script>
+      let vh = 0.01 * window.innerHeight;
+      console.log(vh),
+        document.documentElement.style.setProperty("--vh", vh + "px");
+    </script>
+    <script>
+      function getAbsoluteHeight(el) {
+        // Get the DOM Node if you pass in a string
+        el = typeof el === "string" ? document.querySelector(el) : el;
+
+        var styles = window.getComputedStyle(el);
+        var margin =
+          parseFloat(styles["marginTop"]) + parseFloat(styles["marginBottom"]);
+
+        return Math.ceil(el.offsetHeight + margin);
+      }
+      var heightSum = 0;
+      for (var ele of document.querySelectorAll(".measure")) {
+        heightSum += getAbsoluteHeight(ele);
+      }
+      document.getElementById("body").style.height =
+        getAbsoluteHeight(document.getElementById("body")) - heightSum + `px`;
+    </script>
+    <script>
+      const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+      function generateString(length) {
+        let result = "";
+        const charactersLength = characters.length;
+        for (let i = 0; i < length; i++) {
+          result += characters.charAt(
+            Math.floor(Math.random() * charactersLength)
+          );
+        }
+
+        return result;
+      }
+    </script>
+    <script>
+      function confirmLeave() {
+        var confirmMsg = confirm(`Are you sure?`);
+        if (confirmMsg) {
+          window.location.href = "./party.html";
+        }
+      }
+
+      $("#startParty").click(() => {
+        let currentURL = window.location;
+        var partyCode = generateString(5);
+        if (currentURL.search != "") {
+          var queryString = currentURL.search;
+          var urlParams = new URLSearchParams(queryString);
+          if (
+            urlParams.get("partyID") != null &&
+            urlParams.get("partyID") != undefined
+          ) {
+            var partyCode = urlParams.get("partyID");
+          }
+        }
+        window.location.href = `${
+          window.location.href.split("?")[0] + "?partyID=" + partyCode
+        }&leader=true`;
+      });
+
+      $("#copyToClip").click(() => {
+        const partyCode = $("#partyCode span").html();
+        copyTextToClipboard(
+          `${window.location.href.split("?")[0] + "?partyID=" + partyCode}`
+        );
+      });
+
+      function fallbackCopyTextToClipboard(text) {
+        var textArea = document.createElement("textarea");
+        textArea.value = text;
+
+        // Avoid scrolling to bottom
+        textArea.style.top = "0";
+        textArea.style.left = "0";
+        textArea.style.position = "fixed";
+
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+
+        try {
+          var successful = document.execCommand("copy");
+          var msg = successful ? "successful" : "unsuccessful";
+          console.log("Fallback: Copying text command was " + msg);
+        } catch (err) {
+          console.error("Fallback: Oops, unable to copy", err);
+        }
+
+        document.body.removeChild(textArea);
+      }
+
+      function copyTextToClipboard(text) {
+        if (!navigator.clipboard) {
+          fallbackCopyTextToClipboard(text);
+          return;
+        }
+        navigator.clipboard.writeText(text).then(
+          function () {
+            console.log("Async: Copying to clipboard was successful!");
+            alert("Party Code successfully copied to clipboard!");
+          },
+          function (err) {
+            console.error("Async: Could not copy text: ", err);
+          }
+        );
+      }
+    </script>
+    <!--QR Reader-->
+    <script type="module">
+      import QrScanner from "./js/qr-scanner.min.js";
+
+      const video = document.getElementById("qr-video");
+      const videoContainer = document.getElementById("video-container");
+
+      function setResult(result) {
+        console.log(result.data);
+        if (!result.data.includes("?partyID=")) {
+          return;
+        }
+        var partyCode = result.data.split("?partyID=")[1];
+        joinParty(partyCode);
+      }
+
+      // ####### Web Cam Scanning #######
+
+      const scanner = new QrScanner(video, (result) => setResult(result), {
+        highlightScanRegion: true,
+        highlightCodeOutline: true,
+      });
+
+      window.scanner = scanner;
+
+      $("#joinCode").on("shown.bs.modal", function (e) {
+        scanner.start();
+      });
+
+      document.getElementById("paste").addEventListener("click", () => {
+        console.log("hio");
+        navigator.clipboard.readText().then(
+          (cliptext) => $("#code").val(cliptext),
+          (err) => console.log(err)
+        );
+      });
+
+      $("#joinParty").click(() => {
+        var partyCode = $("#code").val();
+        if (partyCode.includes("?partyID=")) {
+          partyCode = partyCode.split("?partyID=")[1];
+        }
+        joinParty(partyCode);
+      });
+
+      function joinParty(partyCode) {
+        window.location.href = `${
+          window.location.href.split("?")[0] + "?partyID=" + partyCode
+        }`;
+      }
+    </script>
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-app.js";
+      import {
+        getFirestore,
+        doc,
+        setDoc,
+        getDoc,
+      } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-firestore.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-analytics.js";
+      import {
+        getAuth,
+        GoogleAuthProvider,
+        signInWithRedirect,
+        getRedirectResult,
+        signInWithPopup,
+        signOut,
+        signInAnonymously,
+        setPersistence,
+        browserLocalPersistence,
+      } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-auth.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyA-67sEFdlanL0T9V1mQmgIg3534LT1iFg",
+        authDomain: "shiokah.firebaseapp.com",
+        projectId: "shiokah",
+        storageBucket: "shiokah.appspot.com",
+        messagingSenderId: "946796488017",
+        appId: "1:946796488017:web:3b9770ac6f2116fdfc5f70",
+        measurementId: "G-K5MJFKJVYX",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+      const auth = getAuth(app);
+      const provider = new GoogleAuthProvider(app);
+      const firestore = getFirestore();
+
+      if (!localStorage.getItem("uid") || !localStorage.getItem("userObj")) {
+        window.location.href = "./index.html";
+      }
+
+      async function startGroup(partyCode, leader = false) {
+        const dataRow = doc(firestore, `party/${partyCode}`);
+        var dataRowValue = await getDoc(dataRow);
+        var data = {};
+
+        if (dataRowValue.exists()) {
+          data = JSON.parse(JSON.stringify(dataRowValue.data()));
+        }
+
+        if (leader == "true") {
+          data[localStorage.getItem("uid")] = [
+            localStorage.getItem("userObj")["firstName"]
+              ? localStorage.getItem("userObj")["firstName"]
+              : `Guest  ${Object.entries(data).length + 1}`,
+            "Leader",
+          ];
+        } else {
+          data[localStorage.getItem("uid")] = [
+            localStorage.getItem("userObj")["firstName"]
+              ? localStorage.getItem("userObj")["firstName"]
+              : `Guest  ${Object.entries(data).length + 1}`,
+            `Member ${Object.entries(data).length - 1}`,
+          ];
+        }
+
+        await setDoc(dataRow, data, { merge: false });
+        document.getElementById("content").innerHTML = `
+          <div class="flex justify-between items-stretch">
+            <h1 class="text-center font-black self-center">Party Code: ${partyCode}</h1>
+            <button
+              type="button"
+              class="text-white buttonColor aspect-square rounded-full px-3 py-2 text-center focus:outline-blue-500 focus:outline-2 focus:outline"
+              data-toggle="modal"
+              data-target="#qrModal"
+            ><i class="bi bi-share"></i>
+            </button>
+          </div>
+          <div class="flex flex-col gap-3">
+            <div class="text-lg font-bold py-2 flex justify-between">
+              <h1>Member List</h1>
+              <h1>${Object.entries(data).length}</h1>
+            </div>
+            <div class="flex flex-col gap-3 overflow-y-auto grow max-h-56" id="memberList">
+            </div>
+            <h1 class="text-lg font-bold py-2">Controls</h1>
+            <button
+              type="button"
+              onclick="window.location.href='./swipe.html'"
+              class="text-white buttonColor w-full rounded-full p-2 text-center focus:outline-blue-500 focus:outline-2 focus:outline text-xl"
+            >
+              Swipe Together
+            </button>
+            <button
+              type="button"
+              class="text-white buttonColor w-full rounded-full p-2 text-center focus:outline-blue-500 focus:outline-2 focus:outline text-xl"
+              data-toggle="modal"
+              data-target="#mealSettings"
+            >
+              Meal Settings
+            </button>
+            <button
+              type="button"
+              onclick="confirmLeave()"
+              class="text-white buttonColor w-full rounded-full p-2 text-center focus:outline-blue-500 focus:outline-2 focus:outline text-xl"
+            >
+              Leave Party
+            </button>
+        </div>
+          `;
+
+        for (let [uid, dataPts] of Object.entries(data)) {
+          console.log(uid);
+          console.log(dataPts);
+          if (dataPts[1] == "Leader") {
+            $("#memberList").prepend(`
+              <button
+                type="button"
+                class="text-white buttonColor w-full rounded-full p-2 text-center focus:outline-blue-500 focus:outline-2 focus:outline text-xl flex justify-around items-center"
+              >
+                <p class='mx-auto'>${dataPts[0]}</p>
+                <img src="https://cdn.discordapp.com/attachments/1018710809360220221/1022199416930697306/unknown.png" class="w-1/12 mx-3"/>
+              </button>
+            `);
+          } else {
+            $("#memberList").append(`
+              <button
+                type="button"
+                class="text-white buttonColor w-full rounded-full p-2 text-center focus:outline-blue-500 focus:outline-2 focus:outline text-xl kick flex justify-around items-center"
+              >
+                <p class='mx-auto'>${dataPts[0]}</p>
+                <div class='w-1/12 mx-3 bg-slate-200 rounded-full aspect-square' style="color: #343c76;">-</div>
+              </button>
+            `);
+          }
+        }
+        document.getElementById(`memberList`).innerHTML += `
+          
+          `;
+      }
+
+      let currentURL = window.location;
+      if (currentURL.search != "") {
+        var queryString = currentURL.search;
+        var urlParams = new URLSearchParams(queryString);
+        if (
+          urlParams.get("partyID") != null &&
+          urlParams.get("partyID") != undefined
+        ) {
+          if (
+            urlParams.get("leader") != null &&
+            urlParams.get("leader") != undefined
+          ) {
+            $("#partyCode span").html(`${urlParams.get("partyID")}`);
+            document.getElementById(
+              "qrCode"
+            ).src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${
+              window.location.href.split("?")[0] +
+              "?" +
+              window.location.href.split("?")[1].split("&")[0]
+            }`;
+            $("#qrModal").modal("show");
+          }
+          startGroup(urlParams.get("partyID"), urlParams.get("leader"));
+        }
+      }
+    </script>
+  </body>
+</html>

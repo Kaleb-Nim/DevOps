@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shiok!</title>
+    <link rel="shortcut icon" href="./img/shiokie.png" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css"
+    />
+    <script
+      src="https://kit.fontawesome.com/825a35d965.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./style/main.css" />
+  </head>
+
+  <body class="overflow-hidden">
+    <header
+      class="flex justify-between px-4 py-2 items-center measure md:max-w-lg mx-auto"
+    >
+      <div class="icon aspect-square">
+        <img
+          src="https://raw.githubusercontent.com/UltraRaptorYT/SPIT/main/server/img/default.png"
+          alt="profile pic"
+          class="w-full h-full object-cover rounded-full"
+        />
+      </div>
+      <div class="logo aspect-square">
+        <img src="./img/logo.png" alt="logo" class="w-full h-full" />
+      </div>
+      <div class="icon aspect-square" id="shakerMove">
+        <img
+          src="./img/shaker.png"
+          alt="shaker"
+          class="w-full h-full"
+          id="shaker"
+        />
+      </div>
+    </header>
+    <div class="height flex items-stretch" id="swipe">
+      <div class="drag-container left grow relative" id="dont"></div>
+      <div class="container md:max-w-lg flex flex-col gap-5 relative grow">
+        <div class="w-full h-screen relative" id="foodGen"></div>
+      </div>
+      <div class="drag-container right grow relative" id="like"></div>
+    </div>
+    <div
+      class="flex justify-between px-4 py-3 items-center measure bg-slate-200 text-3xl mt-2 md:max-w-lg mx-auto"
+    >
+      <button
+        class="icon aspect-square rounded-full border-2 border-amber-500 flex justify-center items-center"
+        onclick="rewind()"
+      >
+        <i class="fa-solid fa-arrow-rotate-left text-xl text-amber-500"></i>
+      </button>
+      <button
+        class="icon aspect-square rounded-full border-2 border-red-700 flex justify-center items-center"
+        onclick="dontLikeButton()"
+      >
+        <i class="fa-solid fa-xmark text-red-700"></i>
+      </button>
+      <button
+        class="icon aspect-square rounded-full border-2 border-black flex justify-center items-center relative"
+        id="moreInfo"
+      >
+        <i class="fa-solid fa-angle-up text-xl text-black"></i>
+      </button>
+
+      <button
+        class="icon aspect-square rounded-full border-2 border-green-500 flex justify-center items-center"
+        onclick="likeButton()"
+      >
+        <i class="fa-solid fa-heart text-green-500"></i>
+      </button>
+      <button
+        id="dashboard"
+        class="icon aspect-square rounded-full border-2 border-purple-500 flex justify-center items-center"
+      >
+        <img src="./img/shiokie.png" class="icon" />
+      </button>
+    </div>
+    <script
+      src="https://unpkg.com/@popperjs/core@2.9.1/dist/umd/popper.min.js"
+      charset="utf-8"
+    ></script>
+    <script>
+      let vh = 0.01 * window.innerHeight;
+      document.documentElement.style.setProperty("--vh", vh + "px");
+    </script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      function getAbsoluteHeight(el) {
+        // Get the DOM Node if you pass in a string
+        el = typeof el === "string" ? document.querySelector(el) : el;
+
+        var styles = window.getComputedStyle(el);
+        var margin =
+          parseFloat(styles["marginTop"]) + parseFloat(styles["marginBottom"]);
+
+        return Math.ceil(el.offsetHeight + margin);
+      }
+      var heightSum = 0;
+      for (var ele of document.querySelectorAll(".measure")) {
+        heightSum += getAbsoluteHeight(ele);
+      }
+      document.getElementById("swipe").style.height =
+        getAbsoluteHeight(document.getElementById("swipe")) - heightSum + `px`;
+    </script>
+
+    <!--Dragging-->
+    <script>
+      function dragStart(e) {
+        dragSrcEl = this;
+      }
+
+      function dragEnter(e) {
+        this.classList.add("drag-over");
+      }
+
+      function dragLeave(e) {
+        e.stopPropagation();
+        this.classList.remove("drag-over");
+      }
+
+      function dragOver(e) {
+        e.preventDefault();
+        return false;
+      }
+
+      function dragDrop(e) {
+        if (dragSrcEl.classList.contains("drag-item")) {
+          this.appendChild(dragSrcEl);
+          //  if (this.children.length > 1) {
+          //     this.children[0].remove();
+          //   }
+        }
+
+        // var generator = document.querySelectorAll(".generate");
+        // [].forEach.call(generator, function (item) {
+        //   generateMedicine(item);
+        // });
+        checkDrop();
+        var listItems = document.querySelectorAll(".drag-item");
+        [].forEach.call(listItems, function (item) {
+          addEventsDragAndDrop(item);
+        });
+        return false;
+      }
+
+      function dragEnd(e) {
+        var listItems = document.querySelectorAll(".drag-container");
+        [].forEach.call(listItems, function (item) {
+          item.classList.remove("drag-over");
+        });
+      }
+
+      function touchStart(e) {
+        this.classList.add("drag-item--touchmove");
+      }
+
+      var scrollDelay = 0;
+      var scrollDirection = 1;
+      function pageScroll(a, b) {
+        window.scrollBy(0, scrollDirection); // horizontal and vertical scroll increments
+        scrollDelay = setTimeout(pageScroll, 5); // scrolls every 100 milliseconds
+
+        if (a > window.innerHeight - b) {
+          scrollDirection = 1;
+        }
+        if (a < 0 + b) {
+          scrollDirection = -1 * scrollDirection;
+        }
+      }
+      var touchEl;
+      var x = 1;
+      function touchMove(e) {
+        var touchLocation = e.targetTouches[0],
+          w = this.offsetWidth,
+          h = this.offsetHeight;
+
+        lastMove = e;
+        touchEl = this;
+        this.style.width = w + "px";
+        this.style.height = h + "px";
+        this.style.position = "fixed";
+        this.style.left = touchLocation.clientX - w / 2 + "px";
+        this.style.top = touchLocation.clientY - h / 2 + "px";
+
+        if (
+          touchLocation.clientY > window.innerHeight - h ||
+          touchLocation.clientY < 0 + h
+        ) {
+          if (x === 1) {
+            x = 0;
+            pageScroll(touchLocation.clientY, h);
+          }
+        } else {
+          clearTimeout(scrollDelay);
+          x = 1;
+        }
+      }
+
+      function touchEnd(e) {
+        var box1 = this.getBoundingClientRect(),
+          x1 = box1.left,
+          y1 = box1.top,
+          h1 = this.offsetHeight,
+          w1 = this.offsetWidth,
+          b1 = y1 + h1,
+          r1 = x1 + w1;
+
+        var targets = document.querySelectorAll(".drag-container");
+        [].forEach.call(targets, function (target) {
+          var box2 = target.getBoundingClientRect(),
+            x2 = box2.left,
+            y2 = box2.top,
+            h2 = target.offsetHeight,
+            w2 = target.offsetWidth,
+            b2 = y2 + h2,
+            r2 = x2 + w2;
+          if (b1 < y2 || y1 > b2 || r1 < x2 || x1 > r2) {
+            return false;
+          } else {
+            if (touchEl.classList.contains("drag-item")) {
+              target.appendChild(touchEl);
+              // if (target.children.length > 1) {
+              //   target.children[0].remove();
+              // }
+            }
+            // var generator = document.querySelectorAll(".generate");
+            // [].forEach.call(generator, function (item) {
+            //   generateMedicine(item);
+            // });
+            checkDrop();
+            var listItems = document.querySelectorAll(".drag-item");
+            [].forEach.call(listItems, function (item) {
+              addEventsDragAndDrop(item);
+            });
+          }
+        });
+
+        this.removeAttribute("style");
+        this.classList.remove("drag-item--touchmove");
+        clearTimeout(scrollDelay);
+        x = 1;
+      }
+
+      function addEventsDragAndDrop(el) {
+        el.addEventListener("dragstart", dragStart, false);
+        el.addEventListener("dragend", dragEnd, false);
+        el.addEventListener("touchstart", touchStart, {
+          once: false,
+          passive: true,
+        });
+        el.addEventListener("touchmove", touchMove, {
+          once: false,
+          passive: true,
+        });
+        el.addEventListener("touchend", touchEnd, false);
+        touchEl = el;
+      }
+
+      function addTargetEvents(target) {
+        target.addEventListener("dragover", dragOver, false);
+        target.addEventListener("dragenter", dragEnter, false);
+        target.addEventListener("dragleave", dragLeave, false);
+        target.addEventListener("drop", dragDrop, false);
+      }
+      var listItems = document.querySelectorAll(".drag-item");
+      [].forEach.call(listItems, function (item) {
+        addEventsDragAndDrop(item);
+      });
+      var targets = document.querySelectorAll(".drag-container");
+      [].forEach.call(targets, function (target) {
+        addTargetEvents(target);
+      });
+    </script>
+    <script>
+      var foodDict = {
+        "Chicken Rice": {
+          "Hong Yu's Chick":
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Hainanese_Chicken_Rice.jpg/640px-Hainanese_Chicken_Rice.jpg",
+          "Kaleb's Chick":
+            "https://d1e1vgxjd1htwd.cloudfront.net/-/media/recipe-hainanese-chicken-rice.jpg?h=969&la=en&w=1250&hash=2AE75B9674FDE26B8978059DA848F8A888E2845C",
+        },
+        "Fried Chicken": {
+          KFC: "https://cdn.discordapp.com/attachments/650387369706389517/1021125177255407678/image.png",
+          "Texas Chicken":
+            "https://assets.grab.com/wp-content/uploads/sites/8/2019/03/12143755/Texas-Chicken-Chicken-Combo-delivery-kl-700x700.jpg",
+          JingaChicken:
+            "https://cdn.discordapp.com/attachments/650387369706389517/1021124233008529520/unknown.png",
+        },
+        Burgers: {
+          McDonald:
+            "https://b.zmtcdn.com/data/pictures/chains/0/20630/a1bb80a3bdb9968b0b937458ae6acfa8.jpg?fit=around|300:273",
+          KFC: "https://cdn.discordapp.com/attachments/1018710809360220221/1020012348183949362/unknown.png",
+        },
+        "Yong Tau Foo": {
+          RandomYong_Tau_Foo:
+            "https://ewr1.vultrobjects.com/hawkerpedia/article/20210512/4bHCDY9p0D9p_20210408_111319.jpg",
+        },
+        "Hokkien Mee": {
+          RandomHokkienMee:
+            "https://sethlui.com/wp-content/uploads/2021/10/Best-Hokkien-Mee-Ah-Hock.jpg",
+        },
+        "Char Kway Tiao": {
+          RandomChar_Kway_Tiao:
+            "https://noobcook.com/wp-content/uploads/2014/03/charkwayteow2.jpg",
+        },
+        Laksa: {
+          RandomLaksa:
+            "https://rasamalaysia.com/wp-content/uploads/2011/07/curry-laksa-thumb.jpg",
+        },
+        "Ayam Penyet": {
+          RandomAyamPenyet:
+            "https://burpple.imgix.net/foods/283117ab7a78753d09e1850511_original.?w=645&dpr=1&fit=crop&q=80&auto=format",
+        },
+        "Chili Crab": {
+          RandomKayaToast:
+            "https://img.buzzfeed.com/thumbnailer-prod-us-east-1/video-api/assets/268999.jpg",
+        },
+        "Kaya Toast": {
+          RandomChiliCrab:
+            "https://www.thebestsingapore.com/wp-content/uploads/2014/11/best-kaya-toast-596x480.jpg",
+        },
+        "Dim Sum": {
+          RandomDimSum:
+            "http://cdn.cnn.com/cnnnext/dam/assets/160325033254-hk-dim-sum-fook-lam-moon.jpg",
+        },
+        Otah: {
+          citysatayOtah:
+            "https://citysatay.com/wp-content/uploads/2021/03/BananaLeafOtah.jpg",
+        },
+        "Ice Kachang": {
+          RandomIceKachang:
+            "https://singaporelocalfavourites.com/wp-content/uploads/2016/11/ice-kacang.jpg",
+        },
+        "Curry Puff": {
+          RandomCurryPuff:
+            "https://christieathome.com/wp-content/uploads/2020/12/Malaysian-Curry-Puffs-18-scaled.jpg",
+        },
+        Satay: {
+          RandomSatay:
+            "https://sadia.sg/uploads/recipes/20210802080638-2021-08-02recipes080634_md.jpg",
+        },
+        Chendol: {
+          RandomChendol:
+            "https://southeastasiabackpacker.com/wp-content/uploads/2020/11/Cendol-Header.jpg",
+        },
+        "Roti Prata": {
+          RandomRotiPrata:
+            "https://sp-ao.shortpixel.ai/client/to_auto,q_glossy,ret_img,w_450,h_300/https://danielfooddiary.com/wp-content/uploads/2020/05/pratasingapore3.jpg",
+        },
+        Naan: {
+          RandomNaan:
+            "https://www.budgetbytes.com/wp-content/uploads/2010/09/Homemade-Naan-stack-1.jpg",
+        },
+        "Tandoori Chicken": {
+          RandomTandooriChicken:
+            "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/chicken-tandori-1526595014.jpg",
+        },
+        "Chicken Masala": {
+          RandomChickenMasala:
+            "https://static.toiimg.com/thumb/54673639.cms?width=1200&height=900",
+        },
+        "Fish Head Curry": {
+          RandomFishHeadCurry:
+            "https://img-global.cpcdn.com/recipes/a82f9bdc6c383ff4/1200x630cq70/photo.jpg",
+        },
+        "French Fries": {
+          RandomFrenchFries:
+            "https://static.toiimg.com/thumb/54659021.cms?imgsize=275086&width=800&height=800",
+        },
+        Pasta: {
+          TomatoPasta:
+            "https://static.toiimg.com/thumb/52759758.cms?imgsize=560987&width=800&height=800",
+        },
+        Chawanmushi: {
+          RandomSushi:
+            "https://www.justonecookbook.com/wp-content/uploads/2022/09/Chawanmushi-9784-I-500x500.jpg",
+        },
+        Sashimi: {
+          RandomSushi:
+            "https://www.rd.com/wp-content/uploads/2022/02/GettyImages-1284722254.jpg",
+        },
+        Sushi: {
+          RandomSushi:
+            "https://rimage.gnst.jp/livejapan.com/public/article/detail/a/00/00/a0000370/img/basic/a0000370_main.jpg?20201002142956&q=80&rw=750&rh=536",
+        },
+        "Miso Soup": {
+          RandomMisoSoup:
+            "https://www.pressurecookrecipes.com/wp-content/uploads/2021/05/miso-soup.jpg",
+        },
+        Ramen: {
+          RandomRamen:
+            "https://glebekitchen.com/wp-content/uploads/2017/04/tonkotsuramenfront.jpg",
+        },
+        "Korean BBQ ": {
+          RandomKoreanBBQ:
+            "https://iamafoodblog.b-cdn.net/wp-content/uploads/2020/11/korean-bbq-8064w.jpg",
+        },
+      };
+
+      function genNumber(start, end, int = true) {
+        if (int) {
+          return Math.floor(Math.random() * end + start);
+        }
+      }
+
+      function getImage() {
+        let foodArr = [];
+        console.log("This is GetImage foodArr");
+        console.log(foodArr);
+        var brandIndex;
+        for (let [i, food] of Object.entries(foodDict)) {
+          var brandIndex = genNumber(0, Object.entries(food).length);
+          foodArr.push([
+            Object.keys(food)[brandIndex],
+            Object.values(food)[brandIndex],
+          ]);
+        }
+        let foodIndex = genNumber(0, foodArr.length);
+        return [
+          foodArr[foodIndex][1], // food image
+          Object.keys(foodDict)[foodIndex], // food name
+          foodArr[foodIndex][0], // food brand
+        ];
+      }
+
+      function arraysEqual(a, b) {
+        return JSON.stringify(a) === JSON.stringify(b);
+      }
+
+      var historyArr = [getImage()];
+
+      // function check if the food is in the historyArr
+      function checkHistory(food) {
+        for (let i = 0; i < historyArr.length; i++) {
+          if (arraysEqual(food, historyArr[i])) {
+            return true;
+          }
+        }
+        return false;
+      }
+
+      function populate(historyArr) {
+        var currentLength = historyArr.length;
+        document.getElementById("foodGen").innerHTML = `
+          <div class="drag-item w-full object-cover h-full absolute z-10" draggable="true">
+            <img src="${
+              historyArr[currentLength - 1][0]
+            }" class="w-full object-cover h-full bg-black" data-brand="${
+          historyArr[currentLength - 1][2]
+        }" />
+            <h2 class="absolute bottom-0 text-3xl pb-2 pl-2 font-black text-white grad w-full">${
+              historyArr[currentLength - 1][1]
+            }</h2>
+          </div>
+          `;
+        do {
+          historyArr[currentLength] = getImage();
+          if (
+            checkHistory(historyArr[currentLength])
+            // historyArr[currentLength][1] !== historyArr[currentLength - 1][1]
+          ) {
+            console.log("Same");
+            break;
+          }
+        } while (
+          // check historyArr[currentLength][1] already exists in historyArr
+          // historyArr.some(
+          //   (item) => item[1] !== historyArr[currentLength][1]
+          // ),
+          !checkHistory(historyArr[currentLength])
+        );
+        $("#foodGen").prepend(`
+          <div class="drag-item w-full object-cover h-full absolute z-10" draggable="true">
+            <img src="${historyArr[currentLength][0]}" class="w-full object-cover h-full bg-black" data-brand="${historyArr[currentLength][2]}" />
+            <h2 class="absolute bottom-0 text-3xl pb-2 pl-2 font-black text-white grad w-full">${historyArr[currentLength][1]}</h2>
+          </div>
+          `);
+
+        if (historyArr.length > 10) {
+          historyArr.shift();
+        }
+        // historyArr.shift();
+        var listItems = document.querySelectorAll(".drag-item");
+        [].forEach.call(listItems, function (item) {
+          addEventsDragAndDrop(item);
+        });
+        return historyArr;
+      }
+      populate(historyArr);
+      console.log(historyArr);
+    </script>
+    <!--Functions-->
+    <script>
+      setInterval(() => {
+        setTimeout(() => {
+          document.getElementById("shaker").classList.toggle(`shake`);
+        }, 100);
+      }, 1000);
+      document.getElementById("shakerMove").addEventListener("click", () => {
+        var image = getImage();
+        $("#foodGen").append(`
+          <div class="drag-item w-full object-cover h-full absolute z-10" draggable="true">
+            <img src="${image[0]}" class="w-full object-cover h-full bg-black" data-brand="${image[2]}" />
+            <h2 class="absolute bottom-0 text-3xl pb-2 pl-2 font-black text-white grad w-full">${image[1]}</h2>
+          </div>
+          `);
+      });
+
+      var dragArr = [];
+
+      function rewind() {
+        if (dragArr.length <= 0) {
+          return;
+        }
+        var currentLength = dragArr.length - 1;
+        $("#foodGen").append(`
+          <div class="drag-item w-full object-cover h-full absolute z-10" draggable="true">
+            <img src="${dragArr[currentLength][0]}" class="w-full object-cover h-full bg-black" data-brand="${dragArr[currentLength][2]}" />
+            <h2 class="absolute bottom-0 text-3xl pb-2 pl-2 font-black text-white grad w-full">${dragArr[currentLength][1]}</h2>
+          </div>
+          `);
+        dragArr.pop();
+        var listItems = document.querySelectorAll(".drag-item");
+        [].forEach.call(listItems, function (item) {
+          addEventsDragAndDrop(item);
+        });
+      }
+
+      function showReminder() {
+        document.getElementById("moreInfo").classList.add(`show`);
+        setTimeout(() => {
+          document.getElementById("moreInfo").classList.remove(`show`);
+        }, 5000);
+      }
+
+      function checkDrop() {
+        var dragContainer = document.querySelectorAll(".drag-container");
+        for (var container of dragContainer) {
+          if (container.children.length > 0) {
+            console.log(container.id);
+            dragArr.push([
+              container.children[0].querySelector("img").src, // food image
+              container.children[0].querySelector("h2").innerHTML, // food name
+              container.children[0].querySelector("img").dataset.brand, // food brand
+              container.id, // like or dont like
+            ]);
+            switch (container.id) {
+              case "dont":
+                dontLikeFunc();
+              case "like":
+                likeFunc();
+            }
+            container.innerHTML = "";
+          }
+        }
+        if (document.getElementById("moreInfo").classList.contains(`show`)) {
+          document.getElementById("moreInfo").classList.remove(`show`);
+        }
+        if (dragArr.length % 5 == 0) {
+          showReminder();
+        }
+
+        console.log(historyArr);
+        console.log(dragArr);
+        populate(historyArr);
+      }
+
+      function dontLikeFunc() {}
+      function likeFunc() {}
+
+      function dontLikeButton() {
+        $("#dont").html(
+          $("#foodGen").children()[$("#foodGen").children().length - 1]
+        );
+        checkDrop();
+      }
+      function likeButton() {
+        $("#like").html(
+          $("#foodGen").children()[$("#foodGen").children().length - 1]
+        );
+        checkDrop();
+      }
+    </script>
+    <!--Search-->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-app.js";
+      import {
+        getFirestore,
+        doc,
+        setDoc,
+        getDoc,
+      } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-firestore.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-analytics.js";
+      import {
+        getAuth,
+        GoogleAuthProvider,
+        signInWithRedirect,
+        getRedirectResult,
+        signInWithPopup,
+        signOut,
+        signInAnonymously,
+        setPersistence,
+        browserLocalPersistence,
+      } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-auth.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyA-67sEFdlanL0T9V1mQmgIg3534LT1iFg",
+        authDomain: "shiokah.firebaseapp.com",
+        projectId: "shiokah",
+        storageBucket: "shiokah.appspot.com",
+        messagingSenderId: "946796488017",
+        appId: "1:946796488017:web:3b9770ac6f2116fdfc5f70",
+        measurementId: "G-K5MJFKJVYX",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+      const auth = getAuth(app);
+      const provider = new GoogleAuthProvider(app);
+      const firestore = getFirestore();
+
+      async function storeApp() {
+        if (!localStorage.getItem("uid")) {
+          return;
+        }
+        const dataRow = doc(
+          firestore,
+          `userHistory/${localStorage.getItem("uid")}`
+        );
+        var dataRowValue = await getDoc(dataRow);
+        var data = {};
+        for (var i of dragArr) {
+          data[i[1]] = [i[0], i[2], i[3]];
+        }
+        try {
+          await setDoc(dataRow, data, { merge: true });
+        } catch (error) {
+          console.error(error);
+          return false;
+        }
+        console.log("done");
+      }
+
+      $("#dashboard").click(async () => {
+        await storeApp();
+        window.location.href = "./dashboard.html";
+      });
+
+      $("#moreInfo").click(async () => {
+        var foodImg = document.getElementById("foodGen").children;
+        console.log(foodImg[foodImg.length - 1]);
+        dragArr.push([
+          foodImg[foodImg.length - 1].querySelector("img").src, // food image
+          foodImg[foodImg.length - 1].querySelector("h2").innerHTML, // food name
+          foodImg[foodImg.length - 1].querySelector("img").dataset.brand, // food brand
+          "like", // like or dont like
+        ]);
+        localStorage.setItem(
+          "foodItems",
+          JSON.stringify([
+            foodImg[foodImg.length - 1].querySelector("img").src, // food image
+            foodImg[foodImg.length - 1].querySelector("h2").innerHTML, // food name
+            foodImg[foodImg.length - 1].querySelector("img").dataset.brand, // food brand
+          ])
+        );
+        storeApp();
+        window.location.href = `./viewFood.html?foodType=${
+          foodImg[foodImg.length - 1].querySelector("h2").innerHTML
+        }`;
+      });
+    </script>
+  </body>
+</html>

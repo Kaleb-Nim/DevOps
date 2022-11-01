@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shiok!</title>
+    <link rel="shortcut icon" href="./img/shiokie.png" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css"
+    />
+    <script
+      src="https://kit.fontawesome.com/825a35d965.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./style/main.css" />
+    <!-- Import Mapbox GL JS -->
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.js"></script>
+    <link
+      href="https://api.tiles.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: "Open Sans", sans-serif;
+      }
+
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+      }
+    </style>
+    <!-- Import Mapbox GL Directions -->
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.0.2/mapbox-gl-directions.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.0.2/mapbox-gl-directions.css"
+      type="text/css"
+    />
+    <link
+      href="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css"
+      rel="stylesheet"
+    />
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js"></script>
+  </head>
+
+  <body>
+    <div id="map"></div>
+    <footer
+      class="px-2 py-3 w-full md:max-w-lg mx-auto bg-slate-200 fixed md:left-0.5 md:right-0.5 bottom-0 rounded-tl-[25px] rounded-tr-[25px] flex gap-2 justify-evenly measure"
+    >
+      <a
+        class="flex flex-col justify-center h-full aspect-square items-center"
+        href="./dashboard.html"
+      >
+        <img
+          class="aspect-square icon mx-auto"
+          src="./img/dashboard.png"
+          alt=""
+        />
+        <p class="text-center text-xs font-weight-bold whitespace-normal">
+          Dashboard
+        </p>
+      </a>
+      <a
+        class="flex flex-col justify-center h-full aspect-square items-center"
+        href="./party.html"
+      >
+        <img class="aspect-square icon mx-auto" src="./img/party.png" alt="" />
+        <p class="text-center text-xs font-weight-bold whitespace-normal">
+          Party
+        </p>
+      </a>
+      <a
+        class="flex flex-col justify-center h-full aspect-square items-center"
+        href="./swipe.html"
+      >
+        <img class="aspect-square icon mx-auto" src="./img/acorn.png" alt="" />
+        <p class="text-center text-xs font-weight-bold whitespace-normal">
+          Shiok
+        </p>
+      </a>
+      <a
+        class="flex flex-col justify-center h-full aspect-square items-center"
+        href=""
+      >
+        <img
+          class="aspect-square icon mx-auto"
+          src="./img/notification.png"
+          alt=""
+        />
+        <p class="text-center text-xs font-weight-bold whitespace-normal">
+          Notification
+        </p>
+      </a>
+      <a
+        class="flex flex-col justify-center h-full aspect-square items-center"
+        href=""
+      >
+        <img class="aspect-square icon mx-auto" src="./img/user.png" alt="" />
+        <p class="text-center text-xs font-weight-bold whitespace-normal">
+          Profile
+        </p>
+      </a>
+    </footer>
+    <div
+      class="modal hidden fixed top-0 left-0 w-full h-full outline-none fade"
+      id="surveyModal"
+      tabindex="-1"
+      role="dialog"
+    >
+      <div
+        class="modal-dialog relative w-auto pointer-events-none max-w-lg my-36 mx-auto px-4 sm:px-0"
+        role="document"
+      >
+        <div
+          class="relative flex flex-col w-4/5 mx-auto pointer-events-auto bg-white border border-gray-300 rounded-lg"
+        >
+          <div
+            class="flex items-start justify-end p-4 border-gray-300 rounded-t"
+          >
+            <h5
+              class="mb-0 text-lg leading-normal mx-auto font-bold"
+              id="partyCode"
+            >
+              Did you visit?
+            </h5>
+            <button type="button" class="close" data-dismiss="modal">
+              &times;
+            </button>
+          </div>
+          <div class="relative flex px-4 flex-col pb-4 gap-2">
+            <h1 id="restaurant" class="font-black text-2xl text-center"></h1>
+            <div class="flex gap-4 justify-between">
+              <button
+                type="button"
+                class="bg-white hover:bg-slate-700 w-full rounded-full p-1 text-center font-bold text-gray-900 bg-white hover:bg-gray-100 focus:outline-blue-500 focus:outline-2 focus:outline px-5 py-2.5 mr-2 mb-2"
+                id="no"
+              >
+                No
+              </button>
+              <button
+                type="submit"
+                class="text-white buttonColor w-full rounded-full p-1 text-center font-bold focus:outline-blue-500 focus:outline-2 focus:outline"
+                id="yes"
+              >
+                Yes
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
+      crossorigin="anonymous"
+    ></script>
+
+    <script>
+      const currentLocation = window.navigator && window.navigator.geolocation;
+      var latitude, longitude;
+      let zoom = 15;
+      if (currentLocation) {
+        currentLocation.getCurrentPosition(
+          (position) => {
+            navigator.geolocation.getCurrentPosition(getPosition);
+            setInterval(() => {
+              navigator.geolocation.getCurrentPosition(getPosition);
+            }, 5000);
+          },
+          (error) => {
+            console.log(error);
+          }
+        );
+      }
+      var marker, circle;
+
+      console.log(latitude, longitude);
+
+      function getPosition(position) {
+        // console.log(position)
+        var lat = position.coords.latitude;
+        var long = position.coords.longitude;
+        latitude = position.coords.latitude;
+        longitude = position.coords.longitude;
+        var accuracy = position.coords.accuracy;
+
+        // if (marker) {
+        //   map.removeLayer(marker);
+        // }
+
+        // if (circle) {
+        //   map.removeLayer(circle);
+        // }
+        console.log(
+          "Your coordinate is: Lat: " +
+            lat +
+            " Long: " +
+            long +
+            " Accuracy: " +
+            accuracy
+        );
+        console.log(latitude, longitude);
+        marker = new mapboxgl.Marker({
+          color: "#fff",
+        });
+        marker.setLngLat([long, lat]);
+        // marker.addTo(map);
+        console.log(
+          "Your coordinate is: Lat: " +
+            lat +
+            " Long: " +
+            long +
+            " Accuracy: " +
+            accuracy
+        );
+        directions.setOrigin([long, lat]);
+      }
+      mapboxgl.accessToken =
+        "pk.eyJ1IjoidWx0cmFyYXB0b3IiLCJhIjoiY2t0cGo5aThxMGFxMzJybXBiNmZ3bWY4eSJ9.q24IUWxYYm6DhTDn5pY2Rg";
+      const map = new mapboxgl.Map({
+        container: "map", // Specify the container ID
+        style: "mapbox://styles/mapbox/light-v10", // Specify which map style to use
+        center: [
+          longitude ? longitude : 103.7775,
+          latitude ? latitude : 1.3098,
+        ], // Specify the starting position [lng, lat]
+        zoom: 15, // Specify the starting zoom
+      });
+      const directions = new MapboxDirections({
+        accessToken: mapboxgl.accessToken,
+        unit: "metric",
+        profile: "mapbox/walking",
+        alternatives: true,
+        geometries: "geojson",
+        controls: { instructions: false },
+        interactive: false,
+        flyTo: false,
+      });
+
+      var geoLocate = new mapboxgl.GeolocateControl({
+        fitBoundsOptions: {
+          maxZoom: zoom,
+        },
+        positionOptions: {
+          enableHighAccuracy: true,
+        },
+        // When active the map will receive updates to the device's location as it changes.
+        // trackUserLocation: true,
+        // Draw an arrow next to the location dot to indicate which direction the device is heading.
+        trackUserLocation: true,
+        showUserHeading: true,
+        showAccuracyCircle: false,
+      });
+      // map.addControl(geoLocate);
+      map.addControl(directions, "bottom-left");
+
+      map.on("load", () => {
+        geoLocate.trigger();
+      });
+
+      geoLocate.on("geolocate", function () {
+        map.setZoom(zoom);
+      });
+      map.scrollZoom.enable();
+      let currentURL = window.location;
+      if (currentURL.search != "") {
+        var queryString = currentURL.search;
+        var urlParams = new URLSearchParams(queryString);
+        if (
+          urlParams.get("lon") != null &&
+          urlParams.get("lon") != undefined &&
+          urlParams.get("lat") != null &&
+          urlParams.get("lat") != undefined
+        ) {
+          directions.setDestination([
+            urlParams.get("lon"),
+            urlParams.get("lat"),
+          ]);
+        }
+      } else {
+        window.location.href = "./swipe.html";
+      }
+      document.querySelector(".mapboxgl-ctrl-bottom-left").style.visibility =
+        "hidden";
+      document.querySelector(".mapboxgl-ctrl-bottom-right").style.visibility =
+        "hidden";
+      setTimeout(() => {
+        if (
+          urlParams.get("name") != null &&
+          urlParams.get("name") != undefined
+        ) {
+          document.getElementById("restaurant").innerHTML =
+            urlParams.get("name");
+        }
+        $("#surveyModal").modal("show");
+      }, 10000);
+
+      $("#no").click(() => {
+        window.location.href = "./dashboard.html";
+      });
+
+      $("#yes").click(() => {
+        alert("Work In Progress");
+        window.location.href = "./dashboard.html";
+      });
+    </script>
+  </body>
+</html>

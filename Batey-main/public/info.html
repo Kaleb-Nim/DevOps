@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shiok!</title>
+    <link rel="shortcut icon" href="./img/shiokie.png" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css"
+    />
+    <script
+      src="https://kit.fontawesome.com/825a35d965.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./style/main.css" />
+  </head>
+  <body>
+    <form id="form" data-progress="1">
+      <div class="height container md:max-w-lg mx-auto flex flex-col gap-5">
+        <div
+          class="flex w-full justify-between align-center text-xxs gap-4 px-2 mb-2 pt-16"
+          id="progress"
+        >
+          <div class="rounded-full w-full" data-doing="false">&nbsp;</div>
+          <div class="rounded-full w-full" data-doing="false">&nbsp;</div>
+          <div class="rounded-full w-full" data-doing="false">&nbsp;</div>
+          <div class="rounded-full w-full" data-doing="false">&nbsp;</div>
+          <div class="rounded-full w-full" data-doing="false">&nbsp;</div>
+        </div>
+        <div>
+          <h2 class="text-center text-xl font-black" id="miniTitle"></h2>
+          <h1 class="text-center text-3xl font-black" id="megaTitle"></h1>
+        </div>
+        <div class="container w-2/3 mx-auto" id="edit"></div>
+        <div class="container w-2/3 mx-auto mt-auto pb-16">
+          <div class="flex gap-4 justify-between text-lg pb-7">
+            <button
+              type="button"
+              class="bg-white hover:bg-slate-700 w-full rounded-full p-1 text-center font-bold text-gray-900 bg-white hover:bg-gray-100 focus:outline-blue-500 focus:outline-2 focus:outline px-5 py-2.5 mr-2 mb-2"
+              id="back"
+            >
+              Back
+            </button>
+            <button
+              type="submit"
+              class="text-white buttonColor w-full rounded-full p-1 text-center font-bold focus:outline-blue-500 focus:outline-2 focus:outline"
+              id="next"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-app.js";
+      import {
+        getFirestore,
+        doc,
+        setDoc,
+        getDoc,
+      } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-firestore.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-analytics.js";
+      import {
+        getAuth,
+        GoogleAuthProvider,
+        signInWithRedirect,
+        getRedirectResult,
+        signInWithPopup,
+        signOut,
+        signInAnonymously,
+      } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-auth.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyA-67sEFdlanL0T9V1mQmgIg3534LT1iFg",
+        authDomain: "shiokah.firebaseapp.com",
+        projectId: "shiokah",
+        storageBucket: "shiokah.appspot.com",
+        messagingSenderId: "946796488017",
+        appId: "1:946796488017:web:3b9770ac6f2116fdfc5f70",
+        measurementId: "G-K5MJFKJVYX",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const analytics = getAnalytics(app);
+      const firestore = getFirestore();
+
+      let defaultImg = `https://raw.githubusercontent.com/UltraRaptorYT/SPIT/main/server/img/default.png`;
+      const form = document.getElementById("form");
+      var miniArr = [
+        `How should we address you?`,
+        `Looking great!`,
+        `Fulfilling your needs!`,
+        `Personalising your experience!`,
+        `One last step!`,
+      ];
+      var megaArr = [
+        `Profile Details`,
+        `Upload Photo`,
+        `Dietary Requirements`,
+        `Allergies`,
+        `Terms & Conditions`,
+      ];
+      var progress = [
+        `<div class="flex flex-col gap-7 text-lg">
+                  <div class="flex gap-2 justify-between text-lg">
+                    <input
+                      class="w-full rounded-full p-1 text-center font-bold focus:outline-blue-500 focus:outline-2 focus:outline"
+                      type="text"
+                      placeholder="First Name"
+                      id="firstName"
+                      required
+                    />
+                    <input
+                      class="w-full rounded-full p-1 text-center font-bold focus:outline-blue-500 focus:outline-2 focus:outline"
+                      type="text"
+                      placeholder="Last Name"
+                      id="lastName"
+                      required
+                    />
+                  </div>
+                  <input
+                    class="w-full rounded-full p-1 text-center font-bold focus:outline-blue-500 focus:outline-2 focus:outline"
+                    type="number"
+                    min="7"
+                    max="100"
+                    step="1"
+                    placeholder="Age"
+                    id="age"
+                    required
+                  />
+                  <select
+                    class="w-full rounded-full p-1 text-center font-bold focus:outline-blue-500 focus:outline-2 focus:outline"
+                    id="gender"
+                    required
+                  >
+                    <option value="" disabled selected hidden>Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Prefer not to say">Prefer not to say</option>
+                  </select>
+                  <input
+                    class="w-full rounded-full p-1 text-center font-bold focus:outline-blue-500 focus:outline-2 focus:outline"
+                    type="number"
+                    min="50"
+                    max="250"
+                    step="1"
+                    placeholder="Height (cm)"
+                    id="height"
+                    required
+                  /><input
+                    class="w-full rounded-full p-1 text-center font-bold focus:outline-blue-500 focus:outline-2 focus:outline"
+                    type="number"
+                    min="20"
+                    max="250"
+                    step="0.1"
+                    placeholder="Weight (kg)"
+                    id="weight"
+                    required
+                  />
+                </div>
+              </div>`,
+        `
+              <div class="flex flex-col gap-7 text-lg">
+                  <div class="w-8/12 mx-auto aspect-square">
+                    <img
+                      class="w-full h-full object-cover rounded-full"
+                      src="${defaultImg}"
+                      alt="profile.png"
+                      id="profile"
+                    />
+                  </div>
+                  <label
+                    class="bg-white hover:bg-slate-100 w-full rounded-full p-1 text-center font-bold focus:outline-blue-500 focus:outline-2 focus:outline"
+                    for="pfp"
+                    >Upload</label
+                  >
+                  <input
+                    type="file"
+                    name="pfp"
+                    id="pfp"
+                    accept="image/*"
+                    class="hidden"
+                  />
+                </div>
+              `,
+        `<div class="flex flex-col gap-2 text-xl" id="requirements">
+            <label class="flex items-center gap-5 checkFlex">
+              <input type="checkbox" id="Halal" />
+              <span class="checkmark"></span>
+              <p>Halal</p>
+            </label>
+            <label class="flex items-center gap-5 checkFlex">
+              <input type="checkbox" id="Vegan" />
+              <span class="checkmark"></span>
+              <p>Vegan</p>
+            </label>
+            <label class="flex items-center gap-5 checkFlex">
+              <input type="checkbox" id="Vegetarian" />
+              <span class="checkmark"></span>
+              <p>Vegetarian</p>
+            </label>
+            <label class="flex items-center gap-5 checkFlex">
+              <input type="checkbox" id="Lactose" />
+              <span class="checkmark"></span>
+              <p>Lactose Intolerance</p>
+            </label>
+            <label class="flex items-center gap-5 checkFlex">
+              <input type="checkbox" id="Gluten" />
+              <span class="checkmark"></span>
+              <p>Gluten Intolerance</p>
+            </label>
+            <label class="flex items-center gap-5 checkFlex">
+              <input type="checkbox" id="Beef" />
+              <span class="checkmark"></span>
+              <p>No Beef</p>
+            </label>
+            <label class="flex items-center gap-5 checkFlex">
+              <input type="checkbox" id="None" />
+              <span class="checkmark"></span>
+              <p>None</p>
+            </label>
+          </div>`,
+        `<div class="flex flex-col gap-2 text-xl" id="allergy">
+            <label class="flex items-center gap-5 checkFlex">
+              <input type="checkbox" id="Eggs" />
+              <span class="checkmark"></span>
+              <p>Eggs</p>
+            </label>
+            <label class="flex items-center gap-5 checkFlex">
+              <input type="checkbox" id="treeNuts" />
+              <span class="checkmark"></span>
+              <p>Tree Nuts</p>
+            </label>
+            <label class="flex items-center gap-5 checkFlex">
+              <input type="checkbox" id="Peanuts" />
+              <span class="checkmark"></span>
+              <p>Peanuts</p>
+            </label>
+            <label class="flex items-center gap-5 checkFlex">
+              <input type="checkbox" id="Prawn" />
+              <span class="checkmark"></span>
+              <p>Prawn</p>
+            </label>
+            <label class="flex items-center gap-5 checkFlex">
+              <input type="checkbox" id="Shellfish" />
+              <span class="checkmark"></span>
+              <p>Shellfish</p>
+            </label>
+            <label class="flex items-center gap-5 checkFlex">
+              <input type="checkbox" id="Wheat" />
+              <span class="checkmark"></span>
+              <p>Wheat</p>
+            </label>
+            <label class="flex items-center gap-5 checkFlex">
+              <input type="checkbox" id="Soy" />
+              <span class="checkmark"></span>
+              <p>Soy</p>
+            </label>
+            <label class="flex items-center gap-5 checkFlex">
+              <input type="checkbox" id="Fish" />
+              <span class="checkmark"></span>
+              <p>Fish</p>
+            </label>
+            <label class="flex items-center gap-5 checkFlex">
+              <input type="checkbox" id="None" />
+              <span class="checkmark"></span>
+              <p>None</p>
+            </label>
+          </div>`,
+        `
+          <div class="bg-white p-3 text-sm aspect-[3/4] overflow-y-scroll rounded-[25px]">
+            <b>Terms & Conditions</b> <br/><br/>
+            These Terms and Conditions constitute a legally binding agreement made between you, whether personally or on behalf of an entity (“you”) and MSA (“we”, “us” or “our”), concerning your access to and use of our mobile application (the “Application”). You agree that by accessing the Application, you have read, understood, and agree to be bound by all of these Terms and Conditions Use. IF YOU DO NOT AGREE WITH ALL OF THESE TERMS AND CONDITIONS, THEN YOU ARE EXPRESSLY PROHIBITED FROM USING THE APPLICATION AND YOU MUST DISCONTINUE USE IMMEDIATELY.<br/><br/>
+            Supplemental terms and conditions or documents that may be posted on the Application from time to time are hereby expressly incorporated herein by reference. We reserve the right, in our sole discretion, to make changes or modifications to these Terms and Conditions at any time and for any reason. We will alert you about any changes by updating the “Last updated” date of these Terms and Conditions and you waive any right to receive specific notice of each such change. It is your responsibility to periodically review these Terms and Conditions to stay informed of updates. You will be subject to, and will be deemed to have been made aware of and to have accepted, the changes in any revised Terms and Conditions by your continued use of the Application after the date such revised Terms are posted.
+          </div>
+          `,
+      ];
+      const update = async () => {
+        var progressChild = document.getElementById("progress").children;
+        for (let i = 0; i < form.dataset.progress; i++) {
+          progressChild[i].classList.remove("bg-white", "text-white");
+          progressChild[i].classList.add("accent-bg", "accent-text");
+        }
+        for (let i = form.dataset.progress; i < progressChild.length; i++) {
+          progressChild[i].classList.add("bg-white", "text-white");
+          progressChild[i].classList.remove("accent-bg", "accent-text");
+        }
+        document.getElementById("megaTitle").innerHTML =
+          megaArr[form.dataset.progress - 1];
+        document.getElementById("miniTitle").innerHTML =
+          miniArr[form.dataset.progress - 1];
+
+        document.getElementById("edit").innerHTML =
+          progress[form.dataset.progress - 1];
+
+        document.getElementById("back").classList.remove("hidden");
+        if (form.dataset.progress - 1 == 0) {
+          document.getElementById("back").classList.add("hidden");
+          var result = JSON.parse(localStorage.getItem("result"));
+          const dataRow = doc(firestore, `user/${localStorage.getItem("uid")}`);
+          var dataRowValue = await getDoc(dataRow);
+          document.getElementById("firstName").value =
+            result.displayName.split(" ")[0] ||
+            dataRowValue.data()["firstName"] ||
+            "";
+          document.getElementById("lastName").value =
+            result.displayName
+              .split(" ")
+              .slice(1, result.displayName.split(" ").length) ||
+            dataRowValue.data()["lastName"] ||
+            "";
+          document.getElementById("age").value =
+            dataRowValue.data()["age"] || "";
+          document.getElementById("gender").value =
+            dataRowValue.data()["gender"] || "";
+          document.getElementById("height").value =
+            dataRowValue.data()["height"] || "";
+          document.getElementById("weight").value =
+            dataRowValue.data()["weight"] || "";
+        } else if (form.dataset.progress - 1 == 1) {
+          var result = JSON.parse(localStorage.getItem("result"));
+          const dataRow = doc(firestore, `user/${localStorage.getItem("uid")}`);
+          var dataRowValue = await getDoc(dataRow);
+          if (result.photoURL) {
+            document
+              .getElementById("profile")
+              .setAttribute(
+                "src",
+                dataRowValue.data()["pfp"] || result.photoURL
+              );
+          }
+        } else if (form.dataset.progress - 1 == 4) {
+          document.getElementById("back").innerHTML = `Decline`;
+          document.getElementById("next").innerHTML = `Accept`;
+        }
+      };
+      document.getElementById("edit").addEventListener("change", (e) => {
+        if (e.target.type == "file") {
+          readURL(e.target);
+        }
+      });
+      function readURL(input) {
+        if (input.files && input.files[0]) {
+          var reader = new FileReader();
+          reader.onload = async function (e) {
+            document
+              .getElementById("profile")
+              .setAttribute("src", e.target.result);
+            const dataRow = doc(
+              firestore,
+              `user/${localStorage.getItem("uid")}`
+            );
+            var dataRowValue = await getDoc(dataRow);
+            var data = {
+              acorns: dataRowValue.data()["acorns"],
+              member: dataRowValue.data()["member"],
+              type: dataRowValue.data()["type"],
+              pfp: e.target.result,
+              firstName: dataRowValue.data()["firstName"],
+              lastName: dataRowValue.data()["lastName"],
+              age: dataRowValue.data()["age"],
+              gender: dataRowValue.data()["gender"],
+              height: dataRowValue.data()["height"],
+              weight: dataRowValue.data()["weight"],
+            };
+            try {
+              await setDoc(dataRow, data, { merge: true });
+            } catch (error) {
+              console.error(error);
+              return false;
+            }
+          };
+          reader.readAsDataURL(input.files[0]);
+        }
+      }
+      function dataURItoBlob(dataURI) {
+        var binary = atob(dataURI.split(",")[1]);
+        var array = [];
+        for (var i = 0; i < binary.length; i++) {
+          array.push(binary.charCodeAt(i));
+        }
+        return new Blob([new Uint8Array(array)], { type: "image/jpeg" });
+      }
+
+      document.getElementById("back").addEventListener("click", () => {
+        form.dataset.progress = parseInt(form.dataset.progress) - 1;
+        update();
+      });
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        form.dataset.progress = parseInt(form.dataset.progress) + 1;
+        var progressChild = document.getElementById("progress").children;
+        if (progressChild[form.dataset.progress - 1] == undefined) {
+          window.location.href = "./swipe.html";
+          return;
+        }
+        if (form.dataset.progress - 1 == 1) {
+          const dataRow = doc(firestore, `user/${localStorage.getItem("uid")}`);
+          var dataRowValue = await getDoc(dataRow);
+          var data = {
+            acorns: dataRowValue.data()["acorns"],
+            member: dataRowValue.data()["member"],
+            type: dataRowValue.data()["type"],
+            pfp: dataRowValue.data()["pfp"],
+            firstName:
+              document.getElementById("firstName").value ||
+              dataRowValue.data()["firstName"],
+            lastName:
+              document.getElementById("lastName").value ||
+              dataRowValue.data()["lastName"],
+            age:
+              document.getElementById("age").value ||
+              dataRowValue.data()["age"],
+            gender:
+              document.getElementById("gender").value ||
+              dataRowValue.data()["gender"],
+            height:
+              document.getElementById("height").value ||
+              dataRowValue.data()["height"],
+            weight:
+              document.getElementById("weight").value ||
+              dataRowValue.data()["weight"],
+          };
+          try {
+            await setDoc(dataRow, data, { merge: true });
+          } catch (error) {
+            console.error(error);
+            return false;
+          }
+        }
+        progressChild[form.dataset.progress - 1].dataset.doing = "true";
+        update();
+      });
+      update();
+    </script>
+    <script>
+      let vh = 0.01 * window.innerHeight;
+      console.log(vh),
+        document.documentElement.style.setProperty("--vh", vh + "px");
+    </script>
+  </body>
+</html>

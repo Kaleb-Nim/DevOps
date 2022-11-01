@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shiok!</title>
+    <link rel="shortcut icon" href="./img/shiokie.png" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css"
+    />
+    <script
+      src="https://kit.fontawesome.com/825a35d965.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./style/main.css" />
+  </head>
+  <body>
+    <header
+      class="flex justify-between px-4 py-2 items-center md:max-w-lg mx-auto bg-slate-200"
+    >
+      <h1 class="text-xl font-bold">Hi <span id="name">pokemon</span></h1>
+      <div class="relative">
+        <img
+          src="./img/acorn-colored.png"
+          alt="acorns"
+          class="aspect-square absolute w-[40PX] -left-1/2 -top-1/4 rotate-45 translate-x-1/4"
+        />
+        <p class="rounded-full bg-orange-300/50 px-6" id="acorns">0</p>
+      </div>
+    </header>
+    <div
+      class="height container md:max-w-lg mx-auto flex flex-col gap-5 bg-slate-200"
+      id="body"
+    >
+      <div class="mainBG h-full rounded-tl-[25px] rounded-tr-[25px] p-4">
+        <div class="flex flex-col gap-3 overflow-y-auto" id="content">
+          <h1 class="text-lg font-bold py-2">Dashboard</h1>
+          <div class="grid px-2 grid-cols-3 gap-3 md:mx-4 lg:mx-20">
+            <a
+              href="./swipe.html"
+              class="bg-white w-full rounded-[25px] flex-col flex gap-2 px-2 row-span-3 col-span-2 justify-center"
+            >
+              <img src="./img/hungry.png" alt="shiokie" class="w-full" />
+              <p class="uppercase text-center font-bold text-xs">Start Swipe</p>
+            </a>
+            <a
+              href="./voucher.html"
+              class="bg-white w-full flex flex-col gap-2 p-2 rounded-[25px] justify-center"
+            >
+              <img
+                src="./img/voucher.png"
+                alt="voucher"
+                class="px-2 w-full mx-auto"
+              />
+              <p class="uppercase text-center font-bold text-xs">Voucher</p>
+            </a>
+            <a
+              href="./prize.html"
+              class="bg-white w-full flex flex-col gap-2 p-2 rounded-[25px] justify-center"
+            >
+              <img
+                src="./img/gachaMachine.png"
+                alt="prizes"
+                class="px-2 w-full mx-auto"
+              />
+              <p class="uppercase text-center font-bold text-xs">Prizes</p>
+            </a>
+            <a
+              href="./redeem.html"
+              class="bg-white w-full flex flex-col gap-2 p-2 rounded-[25px] justify-center"
+            >
+              <img
+                src="./img/redemption.png"
+                alt="redemption"
+                class="px-2 w-2/3 mx-auto"
+              />
+              <p class="uppercase text-center font-bold text-xs">Redemption</p>
+            </a>
+          </div>
+          <h1 class="text-lg font-bold py-2">Past Swipes</h1>
+          <div
+            class="relative w-full flex gap-6 snap-x snap-proximity overflow-x-auto overflow-y-hidden items-stretch h-full pb-4 justify-center"
+            id="history"
+          >
+            No Previous Swipes
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer
+      class="px-2 py-3 w-full md:max-w-lg mx-auto bg-slate-200 fixed md:left-0.5 md:right-0.5 bottom-0 rounded-tl-[25px] rounded-tr-[25px] flex gap-2 justify-evenly measure"
+    >
+      <a
+        class="flex flex-col justify-center h-full aspect-square items-center"
+        href="./dashboard.html"
+      >
+        <img
+          class="aspect-square icon mx-auto"
+          src="./img/dashboard.png"
+          alt=""
+        />
+        <p class="text-center text-xs font-weight-bold whitespace-normal">
+          Dashboard
+        </p>
+      </a>
+      <a
+        class="flex flex-col justify-center h-full aspect-square items-center"
+        href="./party.html"
+      >
+        <img class="aspect-square icon mx-auto" src="./img/party.png" alt="" />
+        <p class="text-center text-xs font-weight-bold whitespace-normal">
+          Party
+        </p>
+      </a>
+      <a
+        class="flex flex-col justify-center h-full aspect-square items-center"
+        href="./swipe.html"
+      >
+        <img class="aspect-square icon mx-auto" src="./img/acorn.png" alt="" />
+        <p class="text-center text-xs font-weight-bold whitespace-normal">
+          Shiok
+        </p>
+      </a>
+      <a
+        class="flex flex-col justify-center h-full aspect-square items-center"
+        href=""
+      >
+        <img
+          class="aspect-square icon mx-auto"
+          src="./img/notification.png"
+          alt=""
+        />
+        <p class="text-center text-xs font-weight-bold whitespace-normal">
+          Notification
+        </p>
+      </a>
+      <a
+        class="flex flex-col justify-center h-full aspect-square items-center"
+        href=""
+      >
+        <img class="aspect-square icon mx-auto" src="./img/user.png" alt="" />
+        <p class="text-center text-xs font-weight-bold whitespace-normal">
+          Profile
+        </p>
+      </a>
+    </footer>
+    <script>
+      let vh = 0.01 * window.innerHeight;
+      console.log(vh),
+        document.documentElement.style.setProperty("--vh", vh + "px");
+    </script>
+    <script>
+      function getAbsoluteHeight(el) {
+        // Get the DOM Node if you pass in a string
+        el = typeof el === "string" ? document.querySelector(el) : el;
+
+        var styles = window.getComputedStyle(el);
+        var margin =
+          parseFloat(styles["marginTop"]) + parseFloat(styles["marginBottom"]);
+
+        return Math.ceil(el.offsetHeight + margin);
+      }
+      var heightSum = 0;
+      for (var ele of document.querySelectorAll(".measure")) {
+        heightSum += getAbsoluteHeight(ele);
+      }
+      document.getElementById("content").style.paddingBottom = heightSum + `px`;
+    </script>
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-app.js";
+      import {
+        getFirestore,
+        doc,
+        setDoc,
+        getDoc,
+      } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-firestore.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-analytics.js";
+      import {
+        getAuth,
+        GoogleAuthProvider,
+        signInWithRedirect,
+        getRedirectResult,
+        signInWithPopup,
+        signOut,
+        signInAnonymously,
+        setPersistence,
+        browserLocalPersistence,
+      } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-auth.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyA-67sEFdlanL0T9V1mQmgIg3534LT1iFg",
+        authDomain: "shiokah.firebaseapp.com",
+        projectId: "shiokah",
+        storageBucket: "shiokah.appspot.com",
+        messagingSenderId: "946796488017",
+        appId: "1:946796488017:web:3b9770ac6f2116fdfc5f70",
+        measurementId: "G-K5MJFKJVYX",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+      const auth = getAuth(app);
+      const provider = new GoogleAuthProvider(app);
+      const firestore = getFirestore();
+
+      const dataRow = doc(
+        firestore,
+        `userHistory/${localStorage.getItem("uid")}`
+      );
+
+      document.getElementById("name").innerHTML =
+        JSON.parse(localStorage.getItem("userObj")).type + " !";
+
+      var dataRowValue = await getDoc(dataRow);
+      if (
+        dataRowValue.exists() &&
+        Object.entries(dataRowValue.data()).length > 0
+      ) {
+        console.log(dataRowValue.data());
+        document.getElementById("history").classList.remove(`justify-center`);
+        document.getElementById("history").innerHTML = ``;
+        for (var [foodName, dataPoints] of Object.entries(
+          dataRowValue.data()
+        )) {
+          document.getElementById("history").innerHTML += `
+          <div class="snap-center shrink-0 w-1/2 rounded-[10px] relative">
+              <img
+                class="shrink-0 shadow-xl bg-white rounded-[10px] aspect-[5/3] object-cover"
+                src="${dataPoints[0]}"
+              />
+              <div
+                class="text-center w-full bg-slate-200 rounded-bl-[10px] rounded-br-[10px] p-1 absolute bottom-0 flex items-center justify-center gap-2 text-xs"
+              >
+                <p data-brand=${dataPoints[1]}>${foodName}</p>
+                <i
+                  class="preference text-${
+                    dataPoints[2] == "like" ? "green" : "red"
+                  }-500 bi bi-hand-thumbs-${
+            dataPoints[2] == "like" ? "up" : "down"
+          }-fill"
+                ></i>
+              </div>
+            </div>
+          `;
+        }
+      } else {
+        document.getElementById("history").innerHTML = `No Previous Swipes`;
+        document.getElementById("history").classList.add(`justify-center`);
+      }
+    </script>
+    <script>
+      var acorns = localStorage.getItem("acorns") || 10;
+      document.getElementById("acorns").innerHTML = acorns;
+    </script>
+  </body>
+</html>

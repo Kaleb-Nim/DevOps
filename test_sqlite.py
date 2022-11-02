@@ -3,7 +3,7 @@ from flask_tailwind.sqlite import InsuranceDB
 db = InsuranceDB()
 
 # Testing data
-preduction = {
+prediction = {
     "age": 1,
     "bmi": 0.4,
     "children": 0.6,
@@ -12,6 +12,7 @@ preduction = {
     "region": "southeast"
 }
 
+prediction = list(prediction.values())
 # Inserting data into database
 db.insert(prediction)
 

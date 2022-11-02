@@ -1,0 +1,47 @@
+<nav class="navbar navbar-expand-md justify-content-between p-3 {{'bg-purple navbar-dark' if page == 'home' else 'bg-white navbar-light'}}">
+    
+    <a href="/" class="text-decoration-none"><h2 class="logo {{'text-white' if page == 'home' else 'text-purple'}} mb-0"">Emotive</h2></a>
+
+    {% if not userInfo.is_anonymous %}
+    <div class="d-flex flex-column flex-md-row">
+        <div class="d-flex">
+            <div class="d-block d-md-none rounded-pill me-3 {{'bg-white-light' if page == 'home' else 'bg-purple-light'}} py-2 px-3 fw-bold ms-3">
+                <span>Hi, </span>
+                <span class="{{'text-white' if page == 'home' else 'text-purple'}}">{{userInfo.username}}!</span>
+            </div>
+        
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a href="/predict" class="nav-link pe-2 text-end {{'text-white' if page == 'home' else 'text-purple'}}
+                                                {{'fw-bold text-purple' if page == 'predict' else 'text-dark'}} pt-2">Photo</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/dashboard" class="nav-link pe-2 text-end {{'text-white' if page == 'home' else 'text-purple'}}
+                                                {{'fw-bold text-purple' if page == 'dashboard' else 'text-dark'}} pt-2">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/history" class="nav-link pe-2 text-end {{'text-white' if page == 'home' else 'text-purple'}}
+                                                {{'fw-bold text-purple' if page in ['history','results'] else 'text-dark'}} pt-2">History</a>
+                </li>
+                <li class="nav-item">
+                    <form action="/logout" method="post" class="d-flex align-items-center justify-content-end">
+                        <button type="submit" class="nav-link pe-2 text-end {{'text-white' if page == 'home' else 'text-purple'}} pt-2 bg-transparent border-0">Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+
+        <div class="d-none d-md-block rounded-pill {{'bg-white-light' if page == 'home' else 'bg-purple-light'}} py-2 px-3 fw-bold ms-3">
+            <span>Hi, </span>
+            <span class="{{'text-white' if page == 'home' else 'text-purple'}}">{{userInfo.username}}!</span>
+        </div>
+    </div>
+    {% endif %}
+
+</nav>

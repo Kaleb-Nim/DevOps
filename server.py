@@ -29,7 +29,7 @@ def predict():
     if jsonData is None:
         return 'No data'
     else:
-        prediction = model.predict(prediction_inpit)
+        prediction = model.predict(prediction_input)
         output = prediction[0]
     return output, dict(original_input)
 

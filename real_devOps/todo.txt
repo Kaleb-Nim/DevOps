@@ -10,3 +10,12 @@ SQL Alchemy
     Query Data
     Delete Data
     Update Data
+
+dataBase Get data from database
+    Query Data
+    Delete Data
+    Update Data
+
+env/Scripts/activate
+python -m flask run --reload
+pip install -r requirements.txt

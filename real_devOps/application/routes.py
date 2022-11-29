@@ -6,7 +6,7 @@ from application import ai_model
 from application import db
 from application.models import Entry
 from datetime import datetime
-from application.utilities import preProcess, formatPrediction
+from application.utilities import preProcess
 
 # Handles http://127.0.0.1:5000/hello
 @app.route("/hello")
@@ -65,23 +65,24 @@ def predict():
                 print("==>> preProcess() error: ", error)
             # Predict
             prediction = ai_model.predict(prediction_input)
-            # Save the prediction
-            new_entry = Entry(
-                age=age,
-                sex=sex,
-                bmi=bmi,
-                children=children,
-                smoker=smoker,
-                region=region,
-                prediction=prediction[0],
-                date=datetime.now(),
-            )
-            add_entry(new_entry)
-            flash(f"Prediction: money money {prediction[0]}","success")
+            print("==>> prediction: ", prediction)
+            # # Save the prediction
+            # new_entry = Entry(
+            #     age=age,
+            #     sex=sex,
+            #     bmi=bmi,
+            #     children=children,
+            #     smoker=smoker,
+            #     region=region,
+            #     prediction=prediction[0],
+            #     predicted_on_date=datetime.now(),
+            # )
+            # add_entry(new_entry)
+            # # flash(f"Prediction: money money {prediction[0]}","success")
 
         else:
             print("==>> form.validate_on_submit() is False")
-            flash("Error, cannot proceed with prediction", "danger")
+            # flash("Error, cannot proceed with prediction", "danger")
     return render_template(
         "index.html", form=form, title="Kaleb Health insurance prediction"
     )

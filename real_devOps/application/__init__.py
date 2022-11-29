@@ -21,7 +21,7 @@ with app.app_context():
     print('Created Database!')
 
 #AI model file
-joblib_file = r"C:\Users\Kaleb Nim\Documents\GitHub\DevOps\model.pkl"
+joblib_file = "application/static/Pickle_RL_Model.pkl"
 # Load from file
 with open(joblib_file, 'rb') as f:
     ai_model = pickle.load(f)

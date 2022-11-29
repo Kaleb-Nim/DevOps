@@ -25,6 +25,14 @@
                     {% endfor %}
                    
                 </p>
+                                <p>
+                    {{ form.smoker.label }}<br>
+                    {{ form.smoker(class_='form-control') }}
+                    {% for error in form.smoker.errors %}
+                    <span class="error-message">{{ error }}</span>
+                    {% endfor %}
+                   
+                </p>
                 <p>
                     {{ form.children.label }}<br>
                     {{ form.children(class_='form-control') }}

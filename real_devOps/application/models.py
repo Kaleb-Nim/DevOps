@@ -7,4 +7,5 @@ class Entry(db.Model):
     children = db.Column(db.Float)
     smoker = db.Column(db.String(10))
     region = db.Column(db.String(10))
-    predicted_on = db.Column(db.DateTime, nullable=False)
+    prediction = db.Column(db.Float)
+    predicted_on_date = db.Column(db.DateTime, nullable=False)

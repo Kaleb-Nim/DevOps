@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import pickle
 
+# Instantiate SQLAlchemy to handle db process
 db = SQLAlchemy()
 
 #create the Flask app

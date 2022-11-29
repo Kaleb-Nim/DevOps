@@ -8,6 +8,17 @@ from application.models import Entry
 from datetime import datetime
 from application.utilities import preProcess
 
+def get_entries():
+ try:
+    # entries = Entry.query.all() # version 2
+    entries = db.session.execute(db.select(Entry).order_by(Entry.id)).scalars()
+    return entries
+ except Exception as error:
+    db.session.rollback()
+    flash(error,"danger") 
+    return 0
+
+
 # Handles http://127.0.0.1:5000/hello
 @app.route("/hello")
 def hello_world():
@@ -89,7 +100,6 @@ def predict():
             print("==>>region",region)
             print("==>>prediction",prediction)
             
-
             # Save the prediction to the database
             new_entry = Entry(
                 age=age,
@@ -113,3 +123,14 @@ def predict():
         "forms.html", form=form, title="Kaleb Health insurance prediction"
     )
 
+# Handles http://127.0.0.1:5000/predictions_history
+@app.route("/history", methods=["GET"])
+def predictions_history():
+    print("==>> predictions_history() called")
+    entries = get_entries()
+    print("==>> entries: ", entries)
+    return render_template(
+        "history.html",
+        entries = entries,
+        title="Prediction History",
+    ) 

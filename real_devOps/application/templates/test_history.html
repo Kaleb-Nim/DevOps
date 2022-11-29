@@ -1,0 +1,35 @@
+<!-- Inherits from layout.html -->
+{% extends "layout.html" %}
+<!-- The block content replace the one encapsulated in layout.html -->
+{% block content %}
+</div>
+<hr>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Predicted Cost:</th>
+            <th>Age</th>
+            <th>bmi</th>
+            <th>Sex</th>
+            <th>Smoker</th>
+            <th>No. Children</th>
+            <th>Region</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for entry in entries %}
+        <tr>
+            <td>{{ entry.prediction}}</td>
+            <td>{{entry.age}}</td>
+            <td>{{ entry.bmi}}</td>
+            <td>{{ entry.sex }}</td>
+            <td>{{ entry.smoker }}</td>
+            <td>{{ entry.children}}</td>
+            <td>{{ entry.region}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+
+{% endblock %}

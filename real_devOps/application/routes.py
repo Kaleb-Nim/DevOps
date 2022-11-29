@@ -1,6 +1,6 @@
 from application import app
 from flask import render_template
-from application.forms import PredctionFormInsurance
+from application.forms import PredctionFormInsurance ,LoginForm
 from flask import render_template, request, flash
 from application import ai_model
 from application import db
@@ -18,19 +18,32 @@ def hello_world():
 @app.route("/")
 @app.route("/index")
 def index_page():
-    form1 = PredctionFormInsurance()
     return render_template(
-        "index.html", form=form1, title="Kaleb Health insurance prediction"
+        "index.html", title="Kaleb Health insurance prediction"
     )
 
-def add_entry(new_entry):
+# Handles http://127.0.0.1:5000/form
+@app.route("/forms", methods=["GET"])
+def form_page():
+    form1 = PredctionFormInsurance()
+    return render_template(
+        "forms.html", form=form1, title="Kaleb Health insurance prediction"
+    )
+# Handles https://127.0.0.1:5000/login
+@app.route("/login", methods=["GET"])
+def login():
+    return render_template("login.html", title="Login")
+
+# Function to add new prediction or user
+def add_to_db(new_pred):
     try:
-        db.session.add(new_entry)
+        db.session.add(new_pred)
         db.session.commit()
-        return new_entry.id
+        return new_pred.id
     except Exception as error:
         db.session.rollback()
-        flash(error, "danger")
+        print(error, "danger")
+        return None
 
 # Handles http://127.0.0.1:500/predict
 @app.route("/predict", methods=["GET", "POST"])
@@ -39,7 +52,7 @@ def predict():
     form = PredctionFormInsurance()
     print("==>> form: ", form)
     if request.method == "POST":
-        if form:
+        if form.validate_on_submit():
             print("==>> form errors: ", form.errors)
             print("==>> form.validate_on_submit() is True")
             # Get the data from the POST request.
@@ -64,26 +77,39 @@ def predict():
             except Exception as error:
                 print("==>> preProcess() error: ", error)
             # Predict
-            prediction = ai_model.predict(prediction_input)
-            print("==>> prediction: ", prediction)
-            # # Save the prediction
-            # new_entry = Entry(
-            #     age=age,
-            #     sex=sex,
-            #     bmi=bmi,
-            #     children=children,
-            #     smoker=smoker,
-            #     region=region,
-            #     prediction=prediction[0],
-            #     predicted_on_date=datetime.now(),
-            # )
-            # add_entry(new_entry)
-            # # flash(f"Prediction: money money {prediction[0]}","success")
+            prediction = float(ai_model.predict(prediction_input)[0])
+            print("==>> prediction: ", type(prediction))
+
+            #print all parameters to the console
+            print("==>> age: ", age)
+            print("==>>sex",sex)
+            print("==>>bmi",bmi)
+            print("==>>children",children)
+            print("==>>smoker",smoker)
+            print("==>>region",region)
+            print("==>>prediction",prediction)
+            
+
+            # Save the prediction to the database
+            new_entry = Entry(
+                age=age,
+                sex = sex,
+                bmi=bmi,
+                children=children,
+                smoker=smoker,
+                region=region,
+                prediction=100.10,
+                predicted_on_date=datetime.now(),
+            )
+            print("==>> new_entry: ", new_entry)
+            id_added = add_to_db(new_entry)
+            print("==>>Succesfull added id: ", id_added)
+            # flash(f"Prediction: money money {prediction[0]}","success")
 
         else:
             print("==>> form.validate_on_submit() is False")
             # flash("Error, cannot proceed with prediction", "danger")
     return render_template(
-        "index.html", form=form, title="Kaleb Health insurance prediction"
+        "forms.html", form=form, title="Kaleb Health insurance prediction"
     )
 

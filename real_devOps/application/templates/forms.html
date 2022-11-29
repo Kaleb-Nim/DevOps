@@ -1,0 +1,65 @@
+<!-- Inherits from layout.html -->
+{% extends "layout.html" %}
+<!-- The block content replace the one encapsulated in layout.html -->
+{% block content %}
+<div class="row">
+    <div class="col-md-6 offset-md-3 text-secondary">
+        <form name="frmPredict" action="/predict" method="post" novalidate>
+            <fieldset class="form-group">
+                <legend>{{title}}</legend>
+                {{ form.hidden_tag() }}
+                {{ form.csrf_token }}
+                <p>
+                    {{ form.age.label }}<br>
+                    {{ form.age(class_='form-control') }}
+                    {% for error in form.age.errors %}
+                    <span class="error-message">{{ error }}</span>
+                    {% endfor %}
+                </p>
+                <p>
+                    {{ form.sex.label }}<br>
+                    {{ form.sex(class_='form-control') }}
+                    {% for error in form.sex.errors %}
+                    <span class="error-message">{{ error }}</span>
+                    {% endfor %}
+                   
+                </p>
+                <p>
+                    {{ form.bmi.label }}<br>
+                    {{ form.bmi(class_='form-control') }}
+                    {% for error in form.bmi.errors %}
+                    <span class="error-message">{{ error }}</span>
+                    {% endfor %}
+                   
+                </p>
+                                <p>
+                    {{ form.smoker.label }}<br>
+                    {{ form.smoker(class_='form-control') }}
+                    {% for error in form.smoker.errors %}
+                    <span class="error-message">{{ error }}</span>
+                    {% endfor %}
+                   
+                </p>
+                <p>
+                    {{ form.children.label }}<br>
+                    {{ form.children(class_='form-control') }}
+                    {% for error in form.children.errors %}
+                    <span class="error-message">{{ error }}</span>
+                    {% endfor %}
+                   
+                </p>
+                <p>
+                    {{ form.region.label }}<br>
+                    {{ form.region(class_='form-control') }}
+                    {% for error in form.region.errors %}
+                    <span class="error-message">{{ error }}</span>
+                    {% endfor %}
+                </p>
+                <p class="prediction_button">
+                    {{ form.submit(class_='form-control') }}
+                </p>
+            </fieldset>
+        </form>
+    </div>
+</div>
+{% endblock %}

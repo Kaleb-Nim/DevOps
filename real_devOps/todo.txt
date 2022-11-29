@@ -1,0 +1,12 @@
+Dataset EDA + Model Building
+Setup Virtual Enviornment
+    Requirement.txt
+Flask Front-end route
+    get Requrest for index page and return index.html
+
+SQL Alchemy
+    Create Table
+    Insert Data
+    Query Data
+    Delete Data
+    Update Data

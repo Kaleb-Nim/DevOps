@@ -52,7 +52,7 @@ def preProcess(json_data,main_df=df_raw):
     df_ohe = pd.DataFrame(ohe.transform(df[categorical]),columns=ohe.get_feature_names_out(categorical))
     # Concatenate the scaled numeric and one hot encoded categorical values
     df_final = pd.concat([df_scaled[numeric],df_ohe],axis=1)
-    
+
     # Return the final dataframe and original dataframe
     return df_final
 

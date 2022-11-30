@@ -19,3 +19,4 @@ dataBase Get data from database
 env/Scripts/activate
 python -m flask run --reload
 pip install -r requirements.txt
+python -m pytest -v

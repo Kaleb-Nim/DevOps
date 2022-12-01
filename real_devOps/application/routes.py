@@ -56,7 +56,7 @@ def get_entry(id):
         flash(error, "danger")
         return 0
 
-
+# Function to delete an entry
 def remove_entry(id):
     """
     function to get an entry by id
@@ -93,13 +93,6 @@ def api_get(id):
     result = jsonify(data)
     return result  # response back
     # Handles http://127.0.0.1:5000/hello
-
-
-# API delete entry
-@app.route("/api/delete/<id>", methods=["GET"])
-def api_delete(id):
-    entry = remove_entry(int(id))
-    return jsonify({"result": "ok"})
 
 
 # Handles http://127.0.0.1:5000/
@@ -170,13 +163,14 @@ def predict():
                 "smoker": smoker,
                 "region": region,
             }
+            
             # Preprocess the data
             try:
                 prediction_input = preProcess(prediciton_format)
             except Exception as error:
                 print("==>> preProcess() error: ", error)
             # Predict
-            prediction = float(ai_model.predict(prediction_input)[0]).round(2)
+            prediction = float("{0:.2f}".format(ai_model.predict(prediction_input)[0])) 
             print("==>> prediction: ", type(prediction))
 
             # print all parameters to the console
@@ -229,31 +223,31 @@ def predictions_history():
         title="Prediction History",
     )
 
-# Handles GET request of different sortings of the history
-# http://127.0.0.1:5000/history?sort=
-@app.route("/history/<sort_by>", methods=["GET"])
-def predictions_history_sort(sort_by):
-    print("==>> predictions_history_sort() called")
-    entries = get_entries_sorted(sort_by)
-    print("==>> entries: ", entries)
-    return render_template(
-        "history.html",
-        entries=entries,
-        title="Prediction History",
-    )
+# # Handles GET request of different sortings of the history
+# # http://127.0.0.1:5000/history?sort=
+# @app.route("/history/<sort_by>", methods=["GET"])
+# def predictions_history_sort(sort_by):
+#     print("==>> predictions_history_sort() called")
+#     entries = get_entries_sorted(sort_by)
+#     print("==>> entries: ", entries)
+#     return render_template(
+#         "history.html",
+#         entries=entries,
+#         title="Prediction History",
+#     )
 
 
-# Handles http://127.0.0.1:5000/predictions_history
-@app.route("/historytest", methods=["GET"])
-def testpredictions_history():
-    print("==>> predictions_history() called")
-    entries = get_entries()
-    print("==>> entries: ", entries)
-    return render_template(
-        "test_history.html",
-        entries=entries,
-        title="Prediction History",
-    )
+# Handles http://127.0.01.5000/api/delete
+@app.route('/remove', methods=['POST'])
+def remove():
+    sort_by = request.args.get('sort', 'latest')
+    form = Entry()
+    req = request.form
+    id = req["id"]
+    remove_entry(id)
+    return render_template("history.html", title="Prediction History", 
+    form=form, entries = get_entries_sorted(sort_by)
+)
 
 # 404 error handler, handles all 404 errors
 @app.errorhandler(404)

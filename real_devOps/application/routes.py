@@ -240,17 +240,17 @@ def login():
 def verifyLogin():
     login_form = LoginForm()
     print("==>> verifyLogin() called")
-    
     vaild_credentials = {
         "kaleb.nim@gmail.com": "123",
         "sohhongyu@gmail.com": "123",
     }
+    
     try:
         email = request.form['email'].strip().lower()
         password = request.form['password'].strip().lower()
     except Exception as error:
         print("==>> request.form error: ", error)
-    
+
     print("==>> email: ", email)
     print("==>> password: ", password)
     if email in vaild_credentials:

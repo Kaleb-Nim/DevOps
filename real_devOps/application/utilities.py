@@ -11,7 +11,6 @@ joblib_file = "application/static/Pickle_RL_Model.pkl"
 with open(joblib_file, 'rb') as f:
     ai_model = pickle.load(f)
 
-
 def preProcess(json_data,main_df=df_raw):
     '''
     This function takes in a single json object as input (with all features)
@@ -49,6 +48,7 @@ def preProcess(json_data,main_df=df_raw):
     # one hot encode categorical values
     ohe = OneHotEncoder(sparse=False,handle_unknown='ignore',drop='first')
     ohe.fit(main_df[categorical])
+
 
     df_ohe = pd.DataFrame(ohe.transform(df[categorical]),columns=ohe.get_feature_names_out(categorical))
     # Concatenate the scaled numeric and one hot encoded categorical values

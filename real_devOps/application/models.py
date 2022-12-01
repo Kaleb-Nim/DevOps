@@ -2,7 +2,6 @@ from application import db
 from sqlalchemy.orm import validates
 from werkzeug.security import check_password_hash, generate_password_hash
 
-
 sex_class_list = ['male','female']
 class Entry(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)

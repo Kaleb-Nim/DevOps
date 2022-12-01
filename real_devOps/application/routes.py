@@ -32,15 +32,15 @@ def get_entries_sorted(sort="latest"):
         flash(error, "danger")
         return 0
 
-def get_entries():
-    try:
-        # entries = Entry.query.all() # version 2
-        entries = db.session.execute(db.select(Entry).order_by(Entry.id)).scalars()
-        return entries
-    except Exception as error:
-        db.session.rollback()
-        flash(error, "danger")
-        return 0
+# def get_entries():
+#     try:
+#         # entries = Entry.query.all() # version 2
+#         entries = db.session.execute(db.select(Entry).order_by(Entry.id)).scalars()
+#         return entries
+#     except Exception as error:
+#         db.session.rollback()
+#         flash(error, "danger")
+#         return 0
 
 
 def get_entry(id):
@@ -71,6 +71,16 @@ def remove_entry(id):
         flash(error, "danger")
         return 0
 
+# Function to add new prediction
+def add_to_db(new_pred):
+    try:
+        db.session.add(new_pred)
+        db.session.commit()
+        return new_pred.id
+    except Exception as error:
+        db.session.rollback()
+        print(error, "danger")
+        return None
 
 # API get entry
 @app.route("/api/get/<id>", methods=["GET"])
@@ -119,23 +129,6 @@ def form_page2():
     )
 
 
-# Handles https://127.0.0.1:5000/login
-@app.route("/login", methods=["GET"])
-def login():
-    return render_template("login.html", title="Login")
-
-
-# Function to add new prediction or user
-def add_to_db(new_pred):
-    try:
-        db.session.add(new_pred)
-        db.session.commit()
-        return new_pred.id
-    except Exception as error:
-        db.session.rollback()
-        print(error, "danger")
-        return None
-
 
 # Handles http://127.0.0.1:500/predict
 @app.route("/predict", methods=["GET", "POST"])
@@ -163,7 +156,7 @@ def predict():
                 "smoker": smoker,
                 "region": region,
             }
-            
+
             # Preprocess the data
             try:
                 prediction_input = preProcess(prediciton_format)
@@ -210,11 +203,11 @@ def predict():
 
 
 # Handles http://127.0.0.1:5000/predictions_history
+# Handles GET request of different sortings of the history using query parameters
 @app.route("/history", methods=["GET"])
 def predictions_history():
     sort_by = request.args.get('sort', 'latest')
     print("==>> predictions_history() called")
-    # entries = get_entries()
     entries = get_entries_sorted(sort_by)
     print("==>> entries: ", entries)
     return render_template(
@@ -222,19 +215,6 @@ def predictions_history():
         entries=entries,
         title="Prediction History",
     )
-
-# # Handles GET request of different sortings of the history
-# # http://127.0.0.1:5000/history?sort=
-# @app.route("/history/<sort_by>", methods=["GET"])
-# def predictions_history_sort(sort_by):
-#     print("==>> predictions_history_sort() called")
-#     entries = get_entries_sorted(sort_by)
-#     print("==>> entries: ", entries)
-#     return render_template(
-#         "history.html",
-#         entries=entries,
-#         title="Prediction History",
-#     )
 
 
 # Handles http://127.0.01.5000/api/delete
@@ -248,6 +228,37 @@ def remove():
     return render_template("history.html", title="Prediction History", 
     form=form, entries = get_entries_sorted(sort_by)
 )
+
+# Handles https://127.0.0.1:5000/login
+@app.route("/login", methods=["GET"])
+def login():
+    login_form = LoginForm()
+    return render_template("login.html", title="Login",form=login_form)
+
+# Handles Login verifycation
+@app.route("/login", methods=["POST"])
+def verifyLogin():
+    login_form = LoginForm()
+    print("==>> verifyLogin() called")
+    
+    vaild_credentials = {
+        "kaleb.nim@gmail.com": "123",
+        "sohhongyu@gmail.com": "123",
+    }
+    try:
+        email = request.form['email'].strip().lower()
+        password = request.form['password'].strip().lower()
+    except Exception as error:
+        print("==>> request.form error: ", error)
+    
+    print("==>> email: ", email)
+    print("==>> password: ", password)
+    if email in vaild_credentials:
+        print("==>> Login success")
+        return render_template("login.html", title="Login", login_success=True, form=login_form)
+    else:
+        print("==>> Login failed")
+        return render_template("login.html", title="Login", login_success=False, form=login_form)
 
 # 404 error handler, handles all 404 errors
 @app.errorhandler(404)

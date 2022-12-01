@@ -8,6 +8,7 @@
 #  [ 1, 10, 'male', 3, 1,'yes', 'southeast',100.1],
 #  [ 2,  10, 'male', 4,2 ,'yes', 'southeast',100.1]
 # ])
+
 # def test_getAPI(client, entrylist, capsys):
 #     with capsys.disabled():
 #         response = client.get(f'/api/get/{entrylist[0]}')

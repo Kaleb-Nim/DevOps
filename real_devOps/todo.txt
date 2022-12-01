@@ -16,6 +16,17 @@ dataBase Get data from database
     Delete Data
     Update Data
 
+Secure the predict API (Find test case and write)
+
+Model ipynb
+    Model Deployment
+
+Front-end for form
+
+Delete modal popout before delete 
+
+Fix Sort-front-end the default value
+
 env/Scripts/activate
 python -m flask run --reload
 pip install -r requirements.txt

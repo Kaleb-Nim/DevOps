@@ -11,6 +11,7 @@ joblib_file = "application/static/Pickle_RL_Model.pkl"
 with open(joblib_file, 'rb') as f:
     ai_model = pickle.load(f)
 
+
 def preProcess(json_data,main_df=df_raw):
     '''
     This function takes in a single json object as input (with all features)

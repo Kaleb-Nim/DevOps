@@ -26,6 +26,7 @@
             <td>{{ entry.smoker }}</td>
             <td>{{ entry.children}}</td>
             <td>{{ entry.region}}</td>
+            <td>{{entry.predicted_on_date.strftime("%d %b %y %H:%M") }}</td>
         </tr>
         {% endfor %}
     </tbody>

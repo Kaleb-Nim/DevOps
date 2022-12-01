@@ -9,6 +9,29 @@ from datetime import datetime
 from application.utilities import preProcess
 
 
+def get_entries_sorted(sort="latest"):
+    print("==>> sort: ", sort)
+    try:
+        if sort == "oldest":
+            # sort by asc predicted_on_date
+            entries = db.session.execute(db.select(Entry).order_by(Entry.predicted_on_date.asc())).scalars()
+        elif sort == "highestCost":
+            # sort by desc prediction
+            entries = db.session.execute(db.select(Entry).order_by(Entry.prediction.desc())).scalars()
+        elif sort == "lowestCost":
+            # sort by asc prediction
+            entries = db.session.execute(db.select(Entry).order_by(Entry.prediction.asc())).scalars()
+        else:
+
+            # sort by desc predicted_on_date
+            print('==> going thru default')
+            entries = db.session.execute(db.select(Entry).order_by(Entry.predicted_on_date.desc())).scalars()
+        return entries
+    except Exception as error:
+        db.session.rollback()
+        flash(error, "danger")
+        return 0
+
 def get_entries():
     try:
         # entries = Entry.query.all() # version 2
@@ -32,7 +55,8 @@ def get_entry(id):
         db.session.rollback()
         flash(error, "danger")
         return 0
-        
+
+
 def remove_entry(id):
     """
     function to get an entry by id
@@ -46,6 +70,7 @@ def remove_entry(id):
         db.session.rollback()
         flash(error, "danger")
         return 0
+
 
 # API get entry
 @app.route("/api/get/<id>", methods=["GET"])
@@ -62,19 +87,19 @@ def api_get(id):
         "smoker": entry.smoker,
         "region": entry.region,
         "prediction": entry.prediction,
-        "predicted_on_date": entry.predicted_on_date
+        "predicted_on_date": entry.predicted_on_date,
     }
     # Convert the data to json
     result = jsonify(data)
     return result  # response back
     # Handles http://127.0.0.1:5000/hello
 
-#API delete entry
-@app.route("/api/delete/<id>", methods=['GET'])
-def api_delete(id): 
-    entry = remove_entry(int(id))
-    return jsonify({'result':'ok'})
 
+# API delete entry
+@app.route("/api/delete/<id>", methods=["GET"])
+def api_delete(id):
+    entry = remove_entry(int(id))
+    return jsonify({"result": "ok"})
 
 
 # Handles http://127.0.0.1:5000/
@@ -83,13 +108,21 @@ def api_delete(id):
 def index_page():
     return render_template("index.html", title="Kaleb Health insurance prediction")
 
-
 # Handles http://127.0.0.1:5000/form
 @app.route("/forms", methods=["GET"])
 def form_page():
     form1 = PredctionFormInsurance()
     return render_template(
         "forms.html", form=form1, title="Kaleb Health insurance prediction"
+    )
+
+
+# Handles http://127.0.0.1:5000/form
+@app.route("/forms2", methods=["GET"])
+def form_page2():
+    form1 = PredctionFormInsurance()
+    return render_template(
+        "tailwindForms.html", form=form1, title="Kaleb Health insurance prediction"
     )
 
 
@@ -143,7 +176,7 @@ def predict():
             except Exception as error:
                 print("==>> preProcess() error: ", error)
             # Predict
-            prediction = float(ai_model.predict(prediction_input)[0])
+            prediction = float(ai_model.predict(prediction_input)[0]).round(2)
             print("==>> prediction: ", type(prediction))
 
             # print all parameters to the console
@@ -175,18 +208,54 @@ def predict():
             print("==>> form.validate_on_submit() is False")
             # flash("Error, cannot proceed with prediction", "danger")
     return render_template(
-        "forms.html", form=form, title="Kaleb Health insurance prediction"
+        "tailwindForms.html",
+        form=form,
+        title="Kaleb Health insurance prediction",
+        predictedCost=prediction,
     )
 
 
 # Handles http://127.0.0.1:5000/predictions_history
 @app.route("/history", methods=["GET"])
 def predictions_history():
+    sort_by = request.args.get('sort', 'latest')
     print("==>> predictions_history() called")
-    entries = get_entries()
+    # entries = get_entries()
+    entries = get_entries_sorted(sort_by)
     print("==>> entries: ", entries)
     return render_template(
         "history.html",
         entries=entries,
         title="Prediction History",
     )
+
+# Handles GET request of different sortings of the history
+# http://127.0.0.1:5000/history?sort=
+@app.route("/history/<sort_by>", methods=["GET"])
+def predictions_history_sort(sort_by):
+    print("==>> predictions_history_sort() called")
+    entries = get_entries_sorted(sort_by)
+    print("==>> entries: ", entries)
+    return render_template(
+        "history.html",
+        entries=entries,
+        title="Prediction History",
+    )
+
+
+# Handles http://127.0.0.1:5000/predictions_history
+@app.route("/historytest", methods=["GET"])
+def testpredictions_history():
+    print("==>> predictions_history() called")
+    entries = get_entries()
+    print("==>> entries: ", entries)
+    return render_template(
+        "test_history.html",
+        entries=entries,
+        title="Prediction History",
+    )
+
+# 404 error handler, handles all 404 errors
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template("404.html", title="404"), 404

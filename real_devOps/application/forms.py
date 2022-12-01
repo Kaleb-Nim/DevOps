@@ -3,7 +3,6 @@ from wtforms import FloatField, SelectField, StringField, SubmitField
 from wtforms.validators import (InputRequired, Length, NumberRange,
                                 ValidationError)
 
-
 class PredctionFormInsurance(FlaskForm):
     age = FloatField(
         "Age", validators=[InputRequired(), NumberRange(0, 10)]
@@ -33,3 +32,4 @@ class LoginForm(FlaskForm):
         "Password", validators=[InputRequired(), Length(min=8, max=80)]
     )
     submit = SubmitField("Login")
+    

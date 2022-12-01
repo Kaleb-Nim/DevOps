@@ -13,7 +13,6 @@ class Entry(db.Model):
     region = db.Column(db.String(10))
     prediction = db.Column(db.Float)
     predicted_on_date = db.Column(db.DateTime)
-
     # === Validation ===>
     # dtype
     # valid values (ie postive/negative)
@@ -27,7 +26,6 @@ class Entry(db.Model):
         if age <= 0:
             raise AssertionError("Age must be positive")
         return age
-    
     
     @validates("bmi")
     def validate_bmi(self,_,bmi):

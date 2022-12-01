@@ -13,3 +13,5 @@ def app():
 def client(app):
     print(app.static_url_path)
     return app.test_client()
+
+    

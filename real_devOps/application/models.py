@@ -19,6 +19,7 @@ class Entry(db.Model):
     # range (if any)
     # length of string (if any)
 
+
     @validates("age")
     def validate_age(self,_,age):
         if type(age) is not float:

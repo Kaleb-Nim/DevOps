@@ -1,17 +1,16 @@
 from flask_wtf import FlaskForm
-from wtforms import FloatField, SelectField, StringField, SubmitField
+from wtforms import FloatField, SelectField, StringField, SubmitField,IntegerField
 from wtforms.validators import (InputRequired, Length, NumberRange,
                                 ValidationError)
 
-
 class PredctionFormInsurance(FlaskForm):
-    age = FloatField(
-        "Age", validators=[InputRequired(), NumberRange(0, 120)]
+    age = IntegerField(
+        "Age", validators=[InputRequired(), NumberRange(1, 120)]
     )
     bmi = FloatField(
-        "BMI", validators=[InputRequired(), NumberRange(0, 50)]
+        "BMI", validators=[InputRequired(), NumberRange(1, 50)]
     )
-    children = FloatField(
+    children = IntegerField(
         "Children", validators=[InputRequired(), NumberRange(0, 10)]
     )
     smoker = SelectField(

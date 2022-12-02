@@ -40,18 +40,6 @@ def get_entries_sorted(sort="latest"):
         flash(error, "danger")
         return 0
 
-
-# def get_entries():
-#     try:
-#         # entries = Entry.query.all() # version 2
-#         entries = db.session.execute(db.select(Entry).order_by(Entry.id)).scalars()
-#         return entries
-#     except Exception as error:
-#         db.session.rollback()
-#         flash(error, "danger")
-#         return 0
-
-
 def get_entry(id):
     """
     function to get an entry by id
@@ -116,6 +104,26 @@ def api_get(id):
     return result  # response back
     # Handles http://127.0.0.1:5000/hello
 
+# API add entry to db
+@app.route("/api/add", methods=["POST"])
+def api_add():
+    # retrieve the entry using id from client
+    data = request.get_json()
+    print("==>> data: ", data)
+    # Prepare a dictionary for json conversion
+    new_entry = Entry(
+                age=data.age,
+                sex=sex,
+                bmi=bmi,
+                children=children,
+                smoker=smoker,
+                region=region,
+                prediction=prediction,
+                predicted_on_date=datetime.now(),
+    )
+    # Add the new entry to db
+    id = add_to_db(new_entry)
+    return 
 
 # Handles http://127.0.0.1:5000/
 @app.route("/")
@@ -156,6 +164,10 @@ def predict():
             children = form.children.data
             smoker = form.smoker.data
             region = form.region.data
+            # if age or bmi or children is negative, return 400 
+            if age < 0 or bmi < 0 or children < 0:
+                return "Invalid data entry", 400 
+
             # Format the data
             prediciton_format = {
                 "age": age,
@@ -260,7 +272,7 @@ def verifyLogin():
 
     print("==>> email: ", email)
     print("==>> password: ", password)
-    if email in vaild_credentials:
+    if email in vaild_credentials and password == vaild_credentials[email]:
         print("==>> Login success")
         return render_template(
             "login.html", title="Login", login_success=True, form=login_form
@@ -268,7 +280,7 @@ def verifyLogin():
     else:
         print("==>> Login failed")
         return render_template(
-            "login.html", title="Login", login_success=False, form=login_form
+            "login.html", title="Login", login_success="print_error", form=login_form
         )
 
 

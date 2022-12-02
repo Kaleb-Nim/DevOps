@@ -16,17 +16,16 @@ import json
         ['sohhongyu@gmail.com',123],  
     ],
 )
-
 # 3: Write the test function pass in the arguments
 def test_LoginClass(client,loginlist, capsys):
     with capsys.disabled():
-        login = {
+        form = {
             "email": loginlist[0],
             "password": loginlist[1],
         }
         response = client.post('/login', 
-        data=json.dumps(login),
-        content_type="application/json",)
+        data=json.dumps(form),
+        content_type="multipart/form-data",)
 
         assert response.status_code == 200
         response_body = json.loads(response.get_data(as_text=True))

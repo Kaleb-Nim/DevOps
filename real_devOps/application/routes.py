@@ -256,7 +256,7 @@ def remove():
 
 
 # Handles Login verifycation
-@app.route("/login", methods=["POST"])
+@app.route("/login", methods=["post"])
 def verifyLogin():
     login_form = LoginForm()
     print("==>> verifyLogin() called")
@@ -264,7 +264,8 @@ def verifyLogin():
         "kaleb.nim@gmail.com": "123",
         "sohhongyu@gmail.com": "123",
     }
-
+    print(f"==> login_form: {request.form}")
+    
     try:
         email = request.form["email"].strip().lower()
         password = request.form["password"].strip().lower()

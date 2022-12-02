@@ -3,7 +3,6 @@ from wtforms import FloatField, SelectField, StringField, SubmitField,IntegerFie
 from wtforms.validators import (InputRequired, Length, NumberRange,
                                 ValidationError)
 
-
 class PredctionFormInsurance(FlaskForm):
     age = IntegerField(
         "Age", validators=[InputRequired(), NumberRange(1, 120)]

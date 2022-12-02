@@ -33,7 +33,7 @@ def test_LoginClass(client,loginlist, capsys):
 
 
 
-# 2. Ensures login accepts if username and password is correct
+# 2. Ensures login authentication fails when username and password is incorrect
 # What if login is not registered?
 @pytest.mark.xfail(reason="invalid login credentials")
 @pytest.mark.parametrize(

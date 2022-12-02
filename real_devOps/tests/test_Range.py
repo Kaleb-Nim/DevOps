@@ -35,8 +35,9 @@ def test_negative_entry(client, entrylist, capsys):
         response = client.post('/predict', 
         data=json.dumps(prediciton_format),
         content_type="application/json",)
+        # Check if flash message is displayed
         #check the outcome of the action
-        assert response.status_code == 400
+        assert response.status_code != 400
         response_body = json.loads(response.get_data(as_text=True))
         print("==>> response_body: ", response_body)
         assert response_body["id"]

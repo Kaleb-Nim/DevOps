@@ -113,11 +113,11 @@ def api_add():
     # Prepare a dictionary for json conversion
     new_entry = Entry(
                 age=data.age,
-                sex=sex,
-                bmi=bmi,
-                children=children,
-                smoker=smoker,
-                region=region,
+                sex=data.sex,
+                bmi=data.bmi,
+                children=data.children,
+                smoker=data.smoker,
+                region=data.region,
                 prediction=prediction,
                 predicted_on_date=datetime.now(),
     )
@@ -166,6 +166,7 @@ def predict():
             region = form.region.data
             # if age or bmi or children is negative, return 400 
             if age < 0 or bmi < 0 or children < 0:
+                print("==>> age or bmi or children is negative")
                 return "Invalid data entry", 400 
 
             # Format the data
@@ -270,8 +271,7 @@ def verifyLogin():
     except Exception as error:
         print("==>> request.form error: ", error)
 
-    print("==>> email: ", email)
-    print("==>> password: ", password)
+
     if email in vaild_credentials and password == vaild_credentials[email]:
         print("==>> Login success")
         return render_template(

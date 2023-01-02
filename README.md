@@ -1,8 +1,8 @@
 # DevOps
 
-App deployed at: [Web application Deployment]("https://kaleb-health-cost.onrender.com/")
+App deployed at: [https://kaleb-health-cost.onrender.com/](https://kaleb-health-cost.onrender.com/)
 
->>> To develop a Machine Learning (ML) web application using GitLab and Flask Framework,  incorporating the 3 DevOps best practices mentioned in the Background section. This is an  open-ended assessment.
+> To develop a Machine Learning (ML) web application using GitLab and Flask Framework,  incorporating the 3 DevOps best practices mentioned in the Background section. This is an  open-ended assessment.
 
 Author: Kaleb Nim
 

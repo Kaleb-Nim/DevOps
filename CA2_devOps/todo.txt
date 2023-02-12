@@ -1,0 +1,11 @@
+
+env/Scripts/activate
+python -m flask run --reload
+pip install -r requirements.txt
+python -m pytest -v
+
+
+Commands
+docker run -tid -v /var/run/docker.sock:/var/run/docker.sock --name VGGModel_Server python:3.8
+
+docker run --name cifar100__server-p 8501:8501 -v "C:\Users\Kaleb Nim\DownloadsVGG19-100-label-Fine-Tune-20230211T120208Z-001" -e MODEL_NAME=img_classifier -t tensorflow/serving &

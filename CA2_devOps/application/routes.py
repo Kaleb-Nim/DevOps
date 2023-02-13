@@ -7,7 +7,13 @@ from application import db
 from application.models import Entry
 from datetime import datetime
 from application.utilities import preProcess
+<<<<<<< Updated upstream
 
+=======
+from datetime import datetime as dt
+from werkzeug.utils import secure_filename
+import os
+>>>>>>> Stashed changes
 
 def get_entries_sorted(sort="latest"):
     print("==>> sort: ", sort)
@@ -141,11 +147,50 @@ def home_page():
 # Handles http://127.0.0.1:5000/form
 @app.route("/forms", methods=["GET"])
 def form_page():
-    form1 = PredctionFormInsurance()
+    form1 = PredctionImageForm()
     return render_template(
         "forms.html", form=form1, title="Kaleb Health insurance prediction"
     )
 
+<<<<<<< Updated upstream
+=======
+# Handles http://127.0.0.1:5000/form/upload
+@app.route("/forms/upload", methods=["POST","GET"])
+def form_upload():
+    # place holder for confirmation message
+    form = PredctionImageForm()
+    if request.method == "POST":
+        print(f'==>> WENT THRO request.files: {request.files}')
+        if form.validate_on_submit():
+            # print(f'==>> WENT THRO request.files["file"]: {request.files["file"]}')
+            upload_time = dt.now().strftime("%Y%m%d%H%M%S%f")
+            imgName = f"{upload_time}_cifar100"
+            imgPath = f"./application/static/images/{imgName}"
+            
+            # Get the data from the POST request.
+            image = form.image.data
+            filename = secure_filename(image.filename)
+            # Extract out the extension and filename
+            file_name_ext = os.path.splitext(filename)
+            
+            full_filename = f'{file_name_ext[0]}_{upload_time}{file_name_ext[1]}'
+            print("==>> full_filename: ", full_filename)
+            # Save the image to the static folder
+            base_path = os.path.dirname(__file__) + "\\static\\images"
+            print(f'base_path: {base_path}')
+            try:
+                image.save(os.path.join(base_path, full_filename))
+                print(f'Image saved at: {os.path.join(base_path, full_filename)}')
+            except Exception as error:
+                print(f'==>> error when saving image: {error}')
+        else:
+            print("==>> form.validate_on_submit() is False")
+            print("==>> form.errors: ", form.errors)
+            print(f"==>> WENT THRO imgPath: {imgPath}")
+    # if GET
+    return redirect(url_for("form_page"))
+
+>>>>>>> Stashed changes
 
 # Handles http://127.0.0.1:500/predict
 @app.route("/predict", methods=["GET", "POST"])

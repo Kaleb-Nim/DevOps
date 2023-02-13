@@ -2,6 +2,11 @@ from flask_wtf import FlaskForm
 from wtforms import FloatField, SelectField, StringField, SubmitField,IntegerField
 from wtforms.validators import (InputRequired, Length, NumberRange,
                                 ValidationError)
+<<<<<<< Updated upstream
+=======
+
+from flask_wtf.file import FileField, FileAllowed, FileRequired
+>>>>>>> Stashed changes
 
 class PredctionFormInsurance(FlaskForm):
     age = IntegerField(
@@ -24,6 +29,16 @@ class PredctionFormInsurance(FlaskForm):
     )
     submit = SubmitField("Predict")
 
+<<<<<<< Updated upstream
+=======
+# Form to store image upload data
+class PredctionImageForm(FlaskForm):
+    image = FileField(
+        "Image", validators=[InputRequired(), FileAllowed(["jpg", "png", "jpeg"])]
+    )
+    submit = SubmitField("Submit Image")
+
+>>>>>>> Stashed changes
 class LoginForm(FlaskForm):
     email_address = StringField(
         "Email Address", validators=[InputRequired(), Length(min=4, max=50)]

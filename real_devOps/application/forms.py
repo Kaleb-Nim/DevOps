@@ -22,7 +22,7 @@ class PredctionFormInsurance(FlaskForm):
     region = SelectField(
         u'region', choices=[('southeast', 'southeast'), ('southwest', 'southwest'), ('northeast', 'northeast'), ('northwest', 'northwest')], validators=[InputRequired()]
     )
-    submit = SubmitField("Predict")
+    submit = SubmitField("Predict Now!")
 
 class LoginForm(FlaskForm):
     email_address = StringField(

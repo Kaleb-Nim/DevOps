@@ -1,19 +1,15 @@
 from application import app
 from flask import render_template, jsonify, request, redirect, url_for, flash
-from application.forms import PredctionFormInsurance, LoginForm
+from application.forms import PredctionFormInsurance, LoginForm, PredctionImageForm
 from flask import render_template, request, flash
 from application import ai_model
 from application import db
 from application.models import Entry
 from datetime import datetime
 from application.utilities import preProcess
-<<<<<<< Updated upstream
-
-=======
 from datetime import datetime as dt
 from werkzeug.utils import secure_filename
 import os
->>>>>>> Stashed changes
 
 def get_entries_sorted(sort="latest"):
     print("==>> sort: ", sort)
@@ -152,8 +148,6 @@ def form_page():
         "forms.html", form=form1, title="Kaleb Health insurance prediction"
     )
 
-<<<<<<< Updated upstream
-=======
 # Handles http://127.0.0.1:5000/form/upload
 @app.route("/forms/upload", methods=["POST","GET"])
 def form_upload():
@@ -190,7 +184,6 @@ def form_upload():
     # if GET
     return redirect(url_for("form_page"))
 
->>>>>>> Stashed changes
 
 # Handles http://127.0.0.1:500/predict
 @app.route("/predict", methods=["GET", "POST"])

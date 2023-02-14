@@ -76,7 +76,8 @@
 <div class="bg-gray-500 h-screen w-screen sm:px-8 md:px-16 sm:py-8">
     <main class="container mx-auto max-w-screen-lg h-full">
         <!-- file upload modal -->
-        <article aria-label="File Upload Modal" class="relative h-full flex flex-col bg-white shadow-xl rounded-md"
+        <article aria-label="File Upload Modal"
+            class="overflow-auto relative h-full flex flex-col bg-white shadow-xl rounded-md"
             ondrop="dropHandler(event);" ondragover="dragOverHandler(event);" ondragleave="dragLeaveHandler(event);"
             ondragenter="dragEnterHandler(event);">
             <!-- overlay -->
@@ -212,15 +213,9 @@
                             <span class="text-small text-gray-500">No files selected</span>
                         </li>
                     </ul>
-                </section>
-
-                <!-- sticky footer -->
-                <footer class="flex justify-end px-8 pb-8 pt-4">
-
-                    <div class="col-span-6">
-
-                        {{ form.model_name.label }}<br>
-                        {{ form.model_name(class_='form-control') }}
+                    <div class="flex flex-col order-1 xl:max-w-[250px] xl:w-[250px] xl:self-center">
+                        {{ form.model_name.label(class_='block mb-2 text-sm font-medium text-gray-900 dark:text-gray-600') }}<br>
+                        {{ form.model_name(class_='form-control bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500') }}
                         {% for error in form.model_name.errors %}
                         <div class="bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4" role="alert">
                             <p class="font-bold">Field input error</p>
@@ -228,10 +223,9 @@
                         </div>
                         {% endfor %}
                     </div>
-
-                    <div class="col-span-6">
-                        {{ form.dataset_type.label }}<br>
-                        {{ form.dataset_type(class_='form-control') }}
+                    <div class="flex flex-col order-2 xl:order-3 xl:max-w-[250px] xl:w-[250px] xl:self-center">
+                        {{ form.dataset_type.label(class_='block mb-2 text-sm font-medium text-gray-900 dark:text-gray-600') }}<br>
+                        {{ form.dataset_type(class_='form-control bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500') }}
                         {% for error in form.dataset_type.errors %}
                         <div class="bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4" role="alert">
                             <p class="font-bold">Field input error</p>
@@ -239,17 +233,19 @@
                         </div>
                         {% endfor %}
                     </div>
+                    <!-- sticky footer -->
+                    <footer class="flex justify-end px-8 pb-8 pt-4">
+                        <button id="submit" type="submit"
+                            class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                            {{ form.submit(class_='form-control') }}
+                        </button>
+                        <button id="cancel"
+                            class="ml-3 rounded-sm px-3 py-1 hover:bg-gray-300 focus:shadow-outline focus:outline-none">
+                            Cancel
+                        </button>
 
-                    <button id="submit" type="submit"
-                        class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                        {{ form.submit(class_='form-control') }}
-                    </button>
-                    <button id="cancel"
-                        class="ml-3 rounded-sm px-3 py-1 hover:bg-gray-300 focus:shadow-outline focus:outline-none">
-                        Cancel
-                    </button>
-
-                </footer>
+                    </footer>
+                </section>
             </form>
         </article>
     </main>
@@ -289,7 +285,7 @@
 </template>
 
 <template id="image-template">
-    <li class="grow py-3 px-2 xl:w-[450px] max-w-[450px] order-3 xl:order-2 xl:mt-12 mx-auto xl:mx-0">
+    <li class="grow py-3 px-2 xl:w-[300px] max-w-[300px] order-3 xl:order-2 xl:mt-12 mx-auto xl:mx-0">
         <article tabindex="0"
             class="group hasImage w-full h-full rounded-md focus:outline-none focus:shadow-outline bg-gray-100 cursor-pointer relative text-transparent hover:text-white shadow-sm">
             <img alt="upload preview" class="img-preview w-full h-full sticky object-cover rounded-md bg-fixed" />
@@ -521,7 +517,7 @@
                             <div class="mt-2">
                                 <p class="text-sm text-gray-500">The Predicted Class for the image is</p>
                                 <p class="text-lg text-gray-800">
-                                    {{ predictedCost }}, with a confidence of {{ confidence }}%
+                                    {{ predictedCost }}, with a confidence of {{ confidence *100 }}%
                                 </p>
                             </div>
                         </div>
@@ -552,7 +548,7 @@
                         </button>
                     </form>
                 </div>
-                
+
             </div>
         </div>
     </div>

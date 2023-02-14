@@ -18,7 +18,7 @@ import pytest
 def test_prediction(client,test_image_paths):
    # Load the image
    image = load_img(test_image_paths)
-   predictions,predicted_labels_prob = make_prediction(image)
+   predictions,predicted_labels_prob = make_prediction(image,model_name="vgg19")
    # Check that the prediction is a string
    assert isinstance(predictions, str)
    # Check that the predicted_labels_prob 
@@ -26,7 +26,7 @@ def test_prediction(client,test_image_paths):
 
 # Test if model is hosted and running
 @pytest.mark.parametrize(
-    "model_API", ["https://vgg-19-cifar100-model.onrender.com/v1/models/VGG19_cifar100_classifier"] # Add second model API here
+    "model_API", ["https://vgg-19-cifar100-model.onrender.com/v1/models/VGG19_cifar100_classifier",'https://efficientnet-cifar100-model.onrender.com/v1/models/Cifar100Efficient'] # Add second model API here
 )
 def test_model_hosted(client,model_API):
    print(f'model_API: {model_API}')

@@ -32,7 +32,7 @@ class PredctionImageForm(FlaskForm):
         "Image", validators=[FileAllowed(["jpg", "png", "jpeg"]),InputRequired()]
     )
     model_name = SelectField(
-        "Model Name", choices= [("vgg19", "VGG19"), ("resnet50", "ResNet50")], validators=[InputRequired()]
+        "Model Name", choices= [("vgg19", "VGG19"), ("Cifar100Efficient", "EfficientNet")], validators=[InputRequired()]
     )
     dataset_type = SelectField(
         "Dataset Type", choices= [("fine", "FINE"), ("corse", "CORSE")], validators=[InputRequired()]

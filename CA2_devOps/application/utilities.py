@@ -15,30 +15,21 @@ import base64
 import json
 from sklearn.preprocessing import OneHotEncoder
 import requests
-from skimage.transform import resize
-
+import cv2
 
 def load_img(image_path):
     """
     This function takes in a single image path as input
     loads image as a numpy array of size (32, 32, 3) and returns the image
     """
-    image = np.array(Image.open(image_path))
+    # load image as a numpy array with 3 channels
+
+    image = cv2.imread(image_path)
+    # image = np.array(Image.open(image_path))
     print(f"image is of shape {image.shape}")
-    try:
-        assert image.shape == (32, 32, 3)
-        print(f"image is of shape {image.shape}")
-    except AssertionError:
-        print("Image shape is not (32, 32, 3)")
-        image = reshape_image(image)
 
-    try:
-        assert image.shape == (32, 32, 3)
-        print(f"image is of shape {image.shape}")
-    except AssertionError:
-        print("Image shape is still not (32, 32, 3)")
-
-    return image
+    resized_image = reshape_image(image)
+    return resized_image
 
 
 def reshape_image(test_image):
@@ -47,17 +38,14 @@ def reshape_image(test_image):
     Resize the image to (32,32,3) cifar100 and returns the reshaped image
     """
     # resize image to (32,32,3)
-    test_image = Image.fromarray(test_image)
-    test_image = test_image.resize((32, 32))
-    test_image = np.array(test_image)
+    resized_test_image = cv2.resize(test_image, (32,32), interpolation = cv2.INTER_AREA)
 
-    resized_test_image = resize(test_image, (32, 32, 3), anti_aliasing=True)
     # expand the dimension of the image to (1, 32, 32, 3)
     resized_test_image = np.expand_dims(resized_test_image, axis=0)
     return resized_test_image
 
 
-def make_prediction(test_image):
+def make_prediction(test_image,model_name):
     """
     params:
         image: numpy array of shape (32,32,3)
@@ -65,7 +53,14 @@ def make_prediction(test_image):
     Returns the prediction
 
     """
-    url = "https://vgg-19-cifar100-model.onrender.com/v1/models/VGG19_cifar100_classifier:predict"
+    print(f'Model name: {model_name}')
+    if model_name == "vgg19":
+        url = "https://vgg-19-cifar100-model.onrender.com/v1/models/VGG19_cifar100_classifier:predict"
+    elif model_name == "Cifar100Efficient":
+        url = 'https://efficientnet-cifar100-model.onrender.com/v1/models/Cifar100Efficient:predict'
+    else:
+        raise ValueError("model_name must be either vgg19 or Cifar100Efficient")
+
     fine_labels = [
         "apple",
         "aquarium_fish",
@@ -168,13 +163,36 @@ def make_prediction(test_image):
         "woman",
         "worm",
     ]
-
+    # 20 Super Classes labels
+    corse_labels = [
+        "aquatic_mammals",
+        "fish",
+        "flowers",
+        "food_containers",
+        "fruit_and_vegetables",
+        "household_electrical_devices",
+        "household_furniture",
+        "insects",
+        "large_carnivores",
+        "large_man-made_outdoor_things",
+        "large_natural_outdoor_scenes",
+        "large_omnivores_and_herbivores",
+        "medium_mammals",
+        "non-insect_invertebrates",
+        "people",
+        "reptiles",
+        "small_mammals",
+        "trees",
+        "vehicles_1",
+        "vehicles_2",
+    ]
     print("==>> test_image: ", test_image)
     print("==>> test_image.shape: ", test_image.shape)
     data = json.dumps(
         {"signature_name": "serving_default", "instances": test_image.tolist()}
     )  # see [C]
     headers = {"content-type": "application/json"}
+    print(f'==> url: {url}')
     json_response = requests.post(url, data=data, headers=headers)
     print(f"json_response: {json_response}")
     predictions = json.loads(json_response.text)['predictions']

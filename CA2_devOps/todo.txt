@@ -52,17 +52,26 @@ UiPath:
         * Auto Upload Image
 Pytest:
     * Validity testing
-        * 
+        * Test Entry to db
+        * test Remove from db
+        * Test prediction
     * Consistency testing
         * write one pytest image prediction output the same with same model and image 
-    * 
+    * Range testing
+        * Test jpeg, png, jpg, gif, bmp, tiff, etc.
+        * Test different image sizes ( should handle )
+    * Unexpected testing
+        * Ensure app return apprioate endpoint 
+    * Expected Failure Testing
     ( Honestly can just use back the same as CA1 )
 
 Web Hosting:
-    * Render deployment of web application
-    * Another ML model containerize 
+    * Render deployment of web application 
+    * Another ML model containerize ✅
+
 
 Commands
+docker run --name cifar100_server -p 8501:8501 -v "C:/Users/Kaleb Nim/Downloads/VGG19_cifar100_classifier:/models/VGG19_cifar100_classifier" -e MODEL_NAME=VGG19_cifar100_classifier -t tensorflow/serving &
 docker run --name cifar100_server -p 8501:8501 -v "C:/Users/Kaleb Nim/Downloads/VGG19_cifar100_classifier:/models/VGG19_cifar100_classifier" -e MODEL_NAME=VGG19_cifar100_classifier -t tensorflow/serving &
 
 docker network connect ml_network cifar100_server

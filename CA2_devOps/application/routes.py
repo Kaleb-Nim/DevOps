@@ -279,7 +279,9 @@ def verifyLogin():
         password = request.form["password"].strip().lower()
     except Exception as error:
         print("==>> request.form error: ", error)
-
+        return render_template(
+            "login.html", title="Login", login_success="print_error", form=login_form
+        )
 
     if email in vaild_credentials and password == vaild_credentials[email]:
         print("==>> Login success")

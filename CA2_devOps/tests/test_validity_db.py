@@ -24,7 +24,7 @@ app = app.test_client()
     [
         ["./tests/upload_test_files/test_image0.png", "plate",0.534123123 ,"fine", "vgg19"],
         ["./tests/upload_test_files/test_image1.png", "maple_tree",0.442132312 ,'fine', "vgg19"],
-        ['./tests/upload_test_files/test_image9.png','apple',0.888273612312 ,'fine', 'Cifar100Efficient'],
+        ['./tests/upload_test_files/test_image9.png','apple',0.888273612312 ,'fine', 'vgg19'],
     ],
 )
 def test_add_db(client,capsys, entrylist):

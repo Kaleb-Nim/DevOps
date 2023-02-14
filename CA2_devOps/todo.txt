@@ -46,23 +46,23 @@ Routes:
     * get prediction history from database and return to front end (needs) ✅
         * Sorted by datetime/Confidence score ✅
 
-UiPath:
-    *Create one script
-        * Auto Login
-        * Auto Navigate to Prediction Page
-        * Auto Upload Image
+UiPath:✅
+    *Create one script ✅
+        * Auto Login ✅
+        * Auto Navigate to Prediction Page✅
+        * Auto Upload Image✅
 Pytest:
     * Validity testing
-        * Test Entry to db
-        * test Remove from db
-        * Test prediction
+        * Test Entry to db✅
+        * test Remove from db✅
+        * Test prediction✅
     * Consistency testing
         * write one pytest image prediction output the same with same model and image 
     * Range testing
         * Test jpeg, png, jpg, gif, bmp, tiff, etc.
         * Test different image sizes ( should handle )
     * Unexpected testing
-        * Ensure app return apprioate endpoint 
+        * Ensure app return apprioate endpoint ✅
     * Expected Failure Testing
     ( Honestly can just use back the same as CA1 )
 

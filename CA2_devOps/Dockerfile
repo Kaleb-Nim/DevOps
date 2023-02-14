@@ -9,6 +9,7 @@ COPY . /app
 WORKDIR /app
 # Install all the packages needed to run our web app
 RUN pip install -r requirements.txt
+RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
 # Add every files and folder into the app folder 
 ADD . /app
 # Expose port 5000 for http communication

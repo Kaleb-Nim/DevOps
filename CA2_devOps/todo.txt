@@ -40,7 +40,8 @@ Routes:
     * store prediction in database ✅
         * Create Database to store prediction history✅
     * return prediction to front End ✅
-    * Fix Prediction image dataprocessing
+    * Fix Prediction image dataprocessing✅
+    * Fix Crash on error, return error message to front end and reset 
 * /history
     * get prediction history from database and return to front end (needs) ✅
         * Sorted by datetime/Confidence score ✅

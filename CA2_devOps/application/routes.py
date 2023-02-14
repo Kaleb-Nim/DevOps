@@ -184,7 +184,12 @@ def predict():
         image_to_predict = load_img(f'{image_to_predict_file_path}')
 
         # Get the prediction
-        prediction,prediction_prob = make_prediction(image_to_predict,model_name = model_name)
+        try:
+            prediction,prediction_prob = make_prediction(image_to_predict,model_name = model_name)
+        except Exception as error:
+            print("==>> Error: ", error)
+            flash("Error: ", error)
+            return redirect(url_for("form_page"))
         # Check all datatypes
         print("==>> type(image_to_predict_file_path): ", type(image_to_predict_file_path))
         print("==>> type(prediction): ", type(prediction))

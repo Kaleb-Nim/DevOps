@@ -10,7 +10,7 @@ and
 Upload Own Image
 
 (Only one can be selected at a time)
-Default CIFAR100 Images will be displayed as a moving carousel of images ( 10 images )
+
 Upload Own Image will allow users to upload their own image to be classified
 
 Allow Editing of the chosen Image (Crop, Rotate, etc.)
@@ -24,7 +24,41 @@ In prediction History, store the following information:
 * What Editing was done to the image (Crop, Rotate, etc.) if hav time
 * datetime of prediction
 
-Commands
-docker run -tid -v /var/run/docker.sock:/var/run/docker.sock --name VGGModel_Server python:3.8
+Front End:
+* Default CIFAR100 Images will be displayed as a moving carousel of images ( 10 images )
+* Image Display Card with prediction button
+* Modify Prediction History table to account for Images 
 
-docker run --name cifar100__server-p 8501:8501 -v "C:\Users\Kaleb Nim\DownloadsVGG19-100-label-Fine-Tune-20230211T120208Z-001" -e MODEL_NAME=img_classifier -t tensorflow/serving &
+Routes:
+* /predict
+    * Image re-sizing (if needed) ✅
+    * get prediction from model successfully ✅
+    * store prediction in database
+        * Create Database to store prediction history
+    * return prediction to front End
+* /history
+    * get prediction history from database and return to front end (needs)
+        * Sorted by datetime/Model type 
+
+UiPath
+    *Create one script
+        * Auto Login
+        * Auto Navigate to Prediction Page
+        * Auto Upload Image
+Pytest:
+    * Validity testing
+        * 
+    * Consistency testing
+        * write one pytest image prediction output the same with same model and image 
+    * 
+    ( Honestly can just use back the same as CA1 )
+
+
+Commands
+docker run --name cifar100_server -p 8501:8501 -v "C:/Users/Kaleb Nim/Downloads/VGG19_cifar100_classifier:/models/VGG19_cifar100_classifier" -e MODEL_NAME=VGG19_cifar100_classifier -t tensorflow/serving &
+
+docker network connect ml_network cifar100_server
+
+
+VGG Prediction model
+https://vgg-19-cifar100-model.onrender.com/v1/models/VGG19_cifar100_classifier:predict

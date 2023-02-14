@@ -6,7 +6,7 @@ from application import ai_model
 from application import db
 from application.models import Entry
 from datetime import datetime
-from application.utilities import preProcess
+from application.utilities import load_img, reshape_image,make_prediction
 from datetime import datetime as dt
 from werkzeug.utils import secure_filename
 import os
@@ -153,6 +153,8 @@ def form_page():
 def form_upload():
     # place holder for confirmation message
     form = PredctionImageForm()
+    # url for prediction image
+    url = "https://vgg-19-cifar100-model.onrender.com/v1/models/VGG19_cifar100_classifier:predict"
     if request.method == "POST":
         print(f'==>> WENT THRO request.files: {request.files}')
         if form.validate_on_submit():
@@ -189,77 +191,6 @@ def form_upload():
 @app.route("/predict", methods=["GET", "POST"])
 def predict():
     print("==>> predict() called")
-    form = PredctionFormInsurance()
-    print("==>> form: ", form)
-    if request.method == "POST":
-        if form.validate_on_submit():
-            print("==>> form errors: ", form.errors)
-            print("==>> form.validate_on_submit() is True")
-            # Get the data from the POST request.
-            age = form.age.data
-            sex = form.sex.data
-            bmi = form.bmi.data
-            children = form.children.data
-            smoker = form.smoker.data
-            region = form.region.data
-            # if age or bmi or children is negative, return 400 
-            if age < 0 or bmi < 0 or children < 0:
-                print("==>> age or bmi or children is negative")
-                return "Invalid data entry", 400 
-
-            # Format the data
-            prediciton_format = {
-                "age": age,
-                "sex": sex,
-                "bmi": bmi,
-                "children": children,
-                "smoker": smoker,
-                "region": region,
-            }
-
-            # Preprocess the data
-            try:
-                prediction_input = preProcess(prediciton_format)
-            except Exception as error:
-                print("==>> preProcess() error: ", error)
-            # Predict
-            prediction = float("{0:.2f}".format(ai_model.predict(prediction_input)[0]))
-            print("==>> prediction: ", type(prediction))
-
-            # print all parameters to the console
-            print("==>> age: ", age)
-            print("==>>sex", sex)
-            print("==>>bmi", bmi)
-            print("==>>children", children)
-            print("==>>smoker", smoker)
-            print("==>>region", region)
-            print("==>>prediction", prediction)
-
-            # Save the prediction to the database
-            new_entry = Entry(
-                age=age,
-                sex=sex,
-                bmi=bmi,
-                children=children,
-                smoker=smoker,
-                region=region,
-                prediction=prediction,
-                predicted_on_date=datetime.now(),
-            )
-            print("==>> new_entry: ", new_entry)
-            id_added = add_to_db(new_entry)
-            print("==>>Succesfull added id: ", id_added)
-            # flash(f"Prediction: money money {prediction[0]}","success")
-            return render_template(
-                "forms.html", form=form, title="Kaleb Health insurance prediction", predictedCost=prediction
-            )
-
-        else:
-            print("==>> form.validate_on_submit() is False")
-            flash("Error, cannot proceed with prediction", "danger")
-    return render_template(
-        "forms.html", form=form, title="Kaleb Health insurance prediction"
-    )
 
 
 # Handles http://127.0.0.1:5000/predictions_history
@@ -276,6 +207,18 @@ def predictions_history():
         title="Prediction History",
     )
 
+# Handles GET request of different sortings of the history using query parameters
+@app.route("/history_cifar", methods=["GET"])
+def predictions_history_cifar():
+    sort_by = request.args.get("sort", "latest")
+    print("==>> predictions_history() called")
+    entries = get_entries_sorted(sort_by)
+    print("==>> entries: ", entries)
+    return render_template(
+        "history_cifar.html",
+        entries=entries,
+        title="Prediction History",
+    )
 
 # Handles http://127.0.01.5000/api/delete
 @app.route("/remove", methods=["POST"])

@@ -105,14 +105,85 @@
                         Upload a file
                     </button>
                 </header>
-
+                <h1 class="pt-2 pb-0 font-semibold sm:text-lg text-gray-1000">
+                    Sample Images
+                </h1>
+                <section class="text-gray-700 ">
+                    <div class="container px-5 py-1 mx-auto lg:pt-4 lg:px-32">
+                        <!-- Add Heading for Example Images-->
+                        <h2 class="pt-0 pb-3 font-semibold sm:text-xs text-gray-900">
+                            Click image to select
+                        </h2>
+                        <div class="flex flex-wrap -m-1 md:-m-2">
+                            <div class="flex flex-wrap w-1/5">
+                                <div class="w-full p-1 md:p-2">
+                                    <img alt="gallery" class="block object-cover object-center w-full h-full rounded-lg"
+                                        src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/Nature/4-col/img%20(73).webp">
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap w-1/5">
+                                <div class="w-full p-1 md:p-2">
+                                    <img alt="gallery" class="block object-cover object-center w-full h-full rounded-lg"
+                                        src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/Nature/4-col/img%20(73).webp">
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap w-1/5">
+                                <div class="w-full p-1 md:p-2">
+                                    <img alt="gallery" class="block object-cover object-center w-full h-full rounded-lg"
+                                        src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/Nature/4-col/img%20(73).webp">
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap w-1/5">
+                                <div class="w-full p-1 md:p-2">
+                                    <img alt="gallery" class="block object-cover object-center w-full h-full rounded-lg"
+                                        src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/Nature/4-col/img%20(73).webp">
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap w-1/5">
+                                <div class="w-full p-1 md:p-2">
+                                    <img alt="gallery" class="block object-cover object-center w-full h-full rounded-lg"
+                                        src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/Nature/4-col/img%20(73).webp">
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap w-1/5">
+                                <div class="w-full p-1 md:p-2">
+                                    <img alt="gallery" class="block object-cover object-center w-full h-full rounded-lg"
+                                        src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/Nature/4-col/img%20(74).webp">
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap w-1/5">
+                                <div class="w-full p-1 md:p-2">
+                                    <img alt="gallery" class="block object-cover object-center w-full h-full rounded-lg"
+                                        src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/Nature/4-col/img%20(75).webp">
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap w-1/5">
+                                <div class="w-full p-1 md:p-2">
+                                    <img alt="gallery" class="block object-cover object-center w-full h-full rounded-lg"
+                                        src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/Nature/4-col/img%20(70).webp">
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap w-1/5">
+                                <div class="w-full p-1 md:p-2">
+                                    <img alt="gallery" class="block object-cover object-center w-full h-full rounded-lg"
+                                        src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/Nature/4-col/img%20(76).webp">
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap w-1/5">
+                                <div class="w-full p-1 md:p-2">
+                                    <img alt="gallery" class="block object-cover object-center w-full h-full rounded-lg"
+                                        src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/Nature/4-col/img%20(72).webp">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
                 <h1 class="pt-8 pb-3 font-semibold sm:text-lg text-gray-900">
                     To Upload
                 </h1>
 
                 <ul id="gallery" class="w-full flex flex-col items-center justify-center gap-5">
-                    <li id="empty"
-                        class="w-5/6 h-56 object-contain mx-auto">
+                    <li id="empty" class="w-5/6 h-56 object-contain mx-auto">
                         <img class="w-5/6 h-56 object-contain mx-auto"
                             src="https://user-images.githubusercontent.com/507615/54591670-ac0a0180-4a65-11e9-846c-e55ffce0fe7b.png"
                             alt="no data" />
@@ -251,6 +322,8 @@
     document.getElementById("button").onclick = () => hidden.click();
     hidden.onchange = (e) => {
         for (const file of e.target.files) {
+            console.log("==>> file: ", file)
+            console.log("==>> type file: ", typeof file)
             addFile(gallery, file);
         }
     };

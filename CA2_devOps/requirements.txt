@@ -18,3 +18,4 @@ Image
 Pillow
 numpy
 requests
+scikit-image

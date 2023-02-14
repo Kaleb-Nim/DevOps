@@ -131,70 +131,70 @@
                                     <div class="w-full p-1 md:p-2">
                                         <img alt="gallery"
                                             class="block object-cover object-center w-full h-full rounded-lg"
-                                            src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/Nature/4-col/img%20(73).webp">
+                                            src="../static/images/upload_test_files/test_image0.png">
                                     </div>
                                 </div>
                                 <div class="flex flex-wrap w-1/5">
                                     <div class="w-full p-1 md:p-2">
                                         <img alt="gallery"
                                             class="block object-cover object-center w-full h-full rounded-lg"
-                                            src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/Nature/4-col/img%20(73).webp">
+                                            src="../static/images/upload_test_files/test_image1.png">
                                     </div>
                                 </div>
                                 <div class="flex flex-wrap w-1/5">
                                     <div class="w-full p-1 md:p-2">
                                         <img alt="gallery"
                                             class="block object-cover object-center w-full h-full rounded-lg"
-                                            src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/Nature/4-col/img%20(73).webp">
+                                            src="../static/images/upload_test_files/test_image2.png">
                                     </div>
                                 </div>
                                 <div class="flex flex-wrap w-1/5">
                                     <div class="w-full p-1 md:p-2">
                                         <img alt="gallery"
                                             class="block object-cover object-center w-full h-full rounded-lg"
-                                            src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/Nature/4-col/img%20(73).webp">
+                                            src="../static/images/upload_test_files/test_image3.png">
                                     </div>
                                 </div>
                                 <div class="flex flex-wrap w-1/5">
                                     <div class="w-full p-1 md:p-2">
                                         <img alt="gallery"
                                             class="block object-cover object-center w-full h-full rounded-lg"
-                                            src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/Nature/4-col/img%20(73).webp">
+                                            src="../static/images/upload_test_files/test_image4.png">
                                     </div>
                                 </div>
                                 <div class="flex flex-wrap w-1/5">
                                     <div class="w-full p-1 md:p-2">
                                         <img alt="gallery"
                                             class="block object-cover object-center w-full h-full rounded-lg"
-                                            src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/Nature/4-col/img%20(74).webp">
+                                            src="../static/images/upload_test_files/test_image5.png">
                                     </div>
                                 </div>
                                 <div class="flex flex-wrap w-1/5">
                                     <div class="w-full p-1 md:p-2">
                                         <img alt="gallery"
                                             class="block object-cover object-center w-full h-full rounded-lg"
-                                            src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/Nature/4-col/img%20(75).webp">
+                                            src="../static/images/upload_test_files/test_image6.png">
                                     </div>
                                 </div>
                                 <div class="flex flex-wrap w-1/5">
                                     <div class="w-full p-1 md:p-2">
                                         <img alt="gallery"
                                             class="block object-cover object-center w-full h-full rounded-lg"
-                                            src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/Nature/4-col/img%20(70).webp">
+                                            src="../static/images/upload_test_files/test_image7.png">
                                     </div>
                                 </div>
                                 <div class="flex flex-wrap w-1/5">
                                     <div class="w-full p-1 md:p-2">
                                         <img alt="gallery"
                                             class="block object-cover object-center w-full h-full rounded-lg"
-                                            src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/Nature/4-col/img%20(76).webp">
+                                            src="../static/images/upload_test_files/test_image8.png">
                                     </div>
                                 </div>
                                 <div class="flex flex-wrap w-1/5">
                                     <div class="w-full p-1 md:p-2">
                                         <img alt="gallery"
                                             class="block object-cover object-center w-full h-full rounded-lg"
-                                            src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/Nature/4-col/img%20(72).webp">
+                                            src="../static/images/upload_test_files/test_image9.png">
                                     </div>
                                 </div>
                             </div>
@@ -427,21 +427,6 @@
 
     // print all selected files
     document.getElementById("submit").onclick = () => {
-        // Save the files to local directory static/images 
-        const fs = require('fs');
-        const path = require('path');
-
-        const dir = path.join(__dirname, 'static/images');
-        console.log("==>> dir: ", dir)
-        // save the files to the directory
-        fs.writeFile(dir, FILES, (err) => {
-            if (err) {
-                console.log("==>> err: ", err)
-                return console.log(err);
-            }
-            console.log("The file was saved!");
-        });
-
         alert(`Submitted Files:\n${JSON.stringify(FILES)}`);
         console.log(FILES);
     };

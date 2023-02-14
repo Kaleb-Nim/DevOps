@@ -17,24 +17,24 @@ def get_entries_sorted(sort="latest"):
         if sort == "oldest":
             # sort by asc predicted_on_date
             entries = db.session.execute(
-                db.select(Entry).order_by(Entry.predicted_on_date.asc())
+                db.select(EntryCifar).order_by(EntryCifar.predicted_on_date.asc())
             ).scalars()
-        elif sort == "highestCost":
+        elif sort == "highestConfidence":
             # sort by desc prediction
             entries = db.session.execute(
-                db.select(Entry).order_by(Entry.prediction.desc())
+                db.select(EntryCifar).order_by(EntryCifar.prediction_prob.desc())
             ).scalars()
-        elif sort == "lowestCost":
+        elif sort == "lowestConfidence":
             # sort by asc prediction
             entries = db.session.execute(
-                db.select(Entry).order_by(Entry.prediction.asc())
+                db.select(EntryCifar).order_by(EntryCifar.prediction_prob.asc())
             ).scalars()
         else:
 
             # sort by desc predicted_on_date
             print("==> going thru default")
             entries = db.session.execute(
-                db.select(Entry).order_by(Entry.predicted_on_date.desc())
+                db.select(EntryCifar).order_by(EntryCifar.predicted_on_date.desc())
             ).scalars()
         return entries
     except Exception as error:
@@ -48,7 +48,7 @@ def get_entry(id):
     """
     try:
         # entries = Entry.query.filter(Entry.id==id) version 2
-        result = db.get_or_404(Entry, id)
+        result = db.get_or_404(EntryCifar, id)
         return result
     except Exception as error:
         db.session.rollback()
@@ -62,7 +62,7 @@ def remove_entry(id):
     function to get an entry by id
     """
     try:
-        entry = Entry.query.filter(Entry.id == id).first()
+        entry = EntryCifar.query.filter(EntryCifar.id == id).first()
         db.session.delete(entry)
         db.session.commit()
         return 1
@@ -149,47 +149,6 @@ def form_page():
         "forms.html", form=form1, title="Kaleb Health insurance prediction"
     )
 
-# Handles http://127.0.0.1:5000/form/upload
-@app.route("/forms/upload", methods=["POST","GET"])
-def form_upload():
-    # place holder for confirmation message
-    form = PredctionImageForm()
-    # url for prediction image
-    url = "https://vgg-19-cifar100-model.onrender.com/v1/models/VGG19_cifar100_classifier:predict"
-    if request.method == "POST":
-        print(f'==>> WENT THRO request.files: {request.files}')
-        if form.validate_on_submit():
-            # print(f'==>> WENT THRO request.files["file"]: {request.files["file"]}')
-            upload_time = dt.now().strftime("%Y%m%d%H%M%S%f")
-            now = datetime.datetime.now()
-
-            imgName = f"{upload_time}_cifar100"
-            imgPath = f"./application/static/images/{imgName}"
-            
-            # Get the data from the POST request.
-            image = form.image.data
-            filename = secure_filename(image.filename)
-            # Extract out the extension and filename
-            file_name_ext = os.path.splitext(filename)
-            
-            full_filename = f'{file_name_ext[0]}_{upload_time}{file_name_ext[1]}'
-            print("==>> full_filename: ", full_filename)
-            # Save the image to the static folder
-            base_path = os.path.dirname(__file__) + "\\static\\images"
-            print(f'base_path: {base_path}')
-            try:
-                image.save(os.path.join(base_path, full_filename))
-                print(f'Image saved at: {os.path.join(base_path, full_filename)}')
-            except Exception as error:
-                print(f'==>> error when saving image: {error}')
-        else:
-            print("==>> form.validate_on_submit() is False")
-            print("==>> form.errors: ", form.errors)
-            print(f"==>> WENT THRO imgPath: {imgPath}")
-    # if GET
-    return redirect(url_for("form_page") )
-
-
 # Handles http://127.0.0.1:500/predict
 @app.route("/predict", methods=["GET", "POST"])
 def predict():
@@ -233,9 +192,11 @@ def predict():
         print("==>> type(dataset_type): ", type(dataset_type))
         print("==>> type(model_name): ", type(model_name))
         print("==>> type(upload_time_db): ", type(upload_time_db))
+
+        image_to_path_from_history_page = f'../static/images/{full_filename}'
         # Save the prediction to db
         new_entry = EntryCifar(
-            image_path = image_to_predict_file_path,
+            image_path = image_to_path_from_history_page,
             prediction = prediction,
             prediction_prob = prediction_prob,
             dataset_type = dataset_type,

@@ -30,6 +30,7 @@ Front End:
 * Modify Prediction History table to account for Images 
 * Forms front end is fucked up  (need to fix)
 * Display prediction... animation when loading prediction (if hav time)
+* Change Sample Images for clearer images (if hav time)
 
 Routes:
 * /predict
@@ -38,9 +39,10 @@ Routes:
     * store prediction in database ✅
         * Create Database to store prediction history✅
     * return prediction to front End ✅
+    * Fix Prediction image dataprocessing
 * /history
-    * get prediction history from database and return to front end (needs)
-        * Sorted by datetime/Model type 
+    * get prediction history from database and return to front end (needs) ✅
+        * Sorted by datetime/Confidence score ✅
 
 UiPath:
     *Create one script

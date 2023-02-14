@@ -36,4 +36,12 @@ class Entry(db.Model):
         if prediction <= 0:
             raise AssertionError("Prediction must be positive")
         return prediction
-    
+
+# New database for displaying prediction History for cifar100
+class EntryCifar(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    image_path = db.Column(db.String(100), nullable=False)
+    prediction = db.Column(db.String(100), nullable=False)
+    dataset_type = db.Column(db.String(100), nullable=False)
+    model_name = db.Column(db.String(100), nullable=False)
+    predicted_on_date = db.Column(db.DateTime)

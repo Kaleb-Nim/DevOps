@@ -3,6 +3,8 @@ from wtforms import FloatField, SelectField, StringField, SubmitField,IntegerFie
 from wtforms.validators import (InputRequired, Length, NumberRange,
                                 ValidationError)
 
+from flask_wtf.file import FileField, FileAllowed, FileRequired
+
 class PredctionFormInsurance(FlaskForm):
     age = IntegerField(
         "Age", validators=[InputRequired(), NumberRange(1, 120)]
@@ -23,6 +25,13 @@ class PredctionFormInsurance(FlaskForm):
         u'region', choices=[('southeast', 'southeast'), ('southwest', 'southwest'), ('northeast', 'northeast'), ('northwest', 'northwest')], validators=[InputRequired()]
     )
     submit = SubmitField("Predict")
+
+# Form to store image upload data
+class PredctionImageForm(FlaskForm):
+    image = FileField(
+        "Image", validators=[InputRequired(), FileAllowed(["jpg", "png", "jpeg"])]
+    )
+    submit = SubmitField("Submit Image")
 
 class LoginForm(FlaskForm):
     email_address = StringField(

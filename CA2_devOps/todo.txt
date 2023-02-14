@@ -20,6 +20,7 @@ In prediction History, store the following information:
 * Image✅
 * Predicted Label✅
 * What Model was used (name of model E.g VGG19, ResNet50, etc.) ✅
+    * Different preprocessing for different model 
 * What the user thought the image was (Text Input) if hav time
 * What Editing was done to the image (Crop, Rotate, etc.) if hav time
 * datetime of prediction✅

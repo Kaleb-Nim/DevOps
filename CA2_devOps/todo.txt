@@ -1,7 +1,7 @@
-
+python -m venv env
 env/Scripts/activate
-python -m flask run --reload
 pip install -r requirements.txt
+python -m flask run --reload
 python -m pytest -v
 
 Users choose between 
@@ -17,30 +17,32 @@ Allow Editing of the chosen Image (Crop, Rotate, etc.)
 Allow Users to input what they think the image is (Text Input)
 
 In prediction History, store the following information:
-* Image
-* Predicted Label
-* What Model was used (name of model E.g VGG19, ResNet50, etc.)
+* Image✅
+* Predicted Label✅
+* What Model was used (name of model E.g VGG19, ResNet50, etc.) ✅
 * What the user thought the image was (Text Input) if hav time
 * What Editing was done to the image (Crop, Rotate, etc.) if hav time
-* datetime of prediction
+* datetime of prediction✅
 
 Front End:
-* Default CIFAR100 Images will be displayed as a moving carousel of images ( 10 images )
-* Image Display Card with prediction button
+* Default CIFAR100 Images will be displayed as a moving carousel of images ( 10 images ) somewhat ✅
+* Image Display Card with prediction button ✅
 * Modify Prediction History table to account for Images 
+* Forms front end is fucked up  (need to fix)
+* Display prediction... animation when loading prediction (if hav time)
 
 Routes:
 * /predict
     * Image re-sizing (if needed) ✅
-    * get prediction from model successfully ✅
-    * store prediction in database
-        * Create Database to store prediction history
-    * return prediction to front End
+    * get prediction from model successfully and displayed ✅
+    * store prediction in database ✅
+        * Create Database to store prediction history✅
+    * return prediction to front End ✅
 * /history
     * get prediction history from database and return to front end (needs)
         * Sorted by datetime/Model type 
 
-UiPath
+UiPath:
     *Create one script
         * Auto Login
         * Auto Navigate to Prediction Page
@@ -53,6 +55,9 @@ Pytest:
     * 
     ( Honestly can just use back the same as CA1 )
 
+Web Hosting:
+    * Render deployment of web application
+    * Another ML model containerize 
 
 Commands
 docker run --name cifar100_server -p 8501:8501 -v "C:/Users/Kaleb Nim/Downloads/VGG19_cifar100_classifier:/models/VGG19_cifar100_classifier" -e MODEL_NAME=VGG19_cifar100_classifier -t tensorflow/serving &

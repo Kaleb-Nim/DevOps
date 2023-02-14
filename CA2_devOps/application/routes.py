@@ -4,7 +4,7 @@ from application.forms import PredctionFormInsurance, LoginForm, PredctionImageF
 from flask import render_template, request, flash
 from application import ai_model
 from application import db
-from application.models import Entry
+from application.models import Entry ,EntryCifar
 from datetime import datetime
 from application.utilities import load_img, reshape_image,make_prediction
 from datetime import datetime as dt
@@ -77,6 +77,7 @@ def add_to_db(new_pred):
     try:
         db.session.add(new_pred)
         db.session.commit()
+        print(f'new_pred: {new_pred.prediction}')
         return new_pred.id
     except Exception as error:
         db.session.rollback()
@@ -160,6 +161,8 @@ def form_upload():
         if form.validate_on_submit():
             # print(f'==>> WENT THRO request.files["file"]: {request.files["file"]}')
             upload_time = dt.now().strftime("%Y%m%d%H%M%S%f")
+            now = datetime.datetime.now()
+
             imgName = f"{upload_time}_cifar100"
             imgPath = f"./application/static/images/{imgName}"
             
@@ -184,14 +187,72 @@ def form_upload():
             print("==>> form.errors: ", form.errors)
             print(f"==>> WENT THRO imgPath: {imgPath}")
     # if GET
-    return redirect(url_for("form_page"))
+    return redirect(url_for("form_page") )
 
 
 # Handles http://127.0.0.1:500/predict
 @app.route("/predict", methods=["GET", "POST"])
 def predict():
+    form = PredctionImageForm()
     print("==>> predict() called")
+    if request.method == "POST" and form.validate_on_submit():
+        print("==>> form errors: ", form.errors)
+        print("==>> WOI WOI WOI form.image: ", form.image.data)
+        upload_time = dt.now().strftime("%Y%m%d%H%M%S%f")
+        upload_time_db = datetime.now()
+        # Get latest image from static/images folder
+        # imgPath = get_latest_image() # to do - get the latest image
+        base_path = os.path.dirname(__file__) + "\\static\\images"
 
+        # Get the data from the POST request.
+        dataset_type = form.dataset_type.data
+        model_name = form.model_name.data
+        file = form.image.data
+
+
+        # Save the image to the static folder
+        filename = secure_filename(file.filename)
+        # Extract out the extension and filename
+        file_name_ext = os.path.splitext(filename)
+        full_filename = f'{file_name_ext[0]}_{upload_time}{file_name_ext[1]}'
+        print("==>> full_filename: ", full_filename)
+
+        image_to_predict_file_path = os.path.join(base_path, full_filename)
+        file.save(image_to_predict_file_path)
+        print(f'Image saved at: {image_to_predict_file_path}')
+
+        # Load the image + data pre-processing ( Handled in utils.py )
+        image_to_predict = load_img(f'{image_to_predict_file_path}')
+
+        # Get the prediction
+        prediction,prediction_prob = make_prediction(image_to_predict)
+        # Check all datatypes
+        print("==>> type(image_to_predict_file_path): ", type(image_to_predict_file_path))
+        print("==>> type(prediction): ", type(prediction))
+        print("==>> type(prediction_prob): ", type(prediction_prob))
+        print("==>> type(dataset_type): ", type(dataset_type))
+        print("==>> type(model_name): ", type(model_name))
+        print("==>> type(upload_time_db): ", type(upload_time_db))
+        # Save the prediction to db
+        new_entry = EntryCifar(
+            image_path = image_to_predict_file_path,
+            prediction = prediction,
+            prediction_prob = prediction_prob,
+            dataset_type = dataset_type,
+            model_name = model_name,
+            predicted_on_date = upload_time_db
+        )
+
+        print("==>> new_entry: ", new_entry)
+        id_added = add_to_db(new_entry)
+        print("==>>Succesfull added id: ", id_added)
+        return render_template(
+            "forms.html", form=form, title="Kaleb Health insurance prediction", predictedCost=prediction,confidence = prediction_prob
+        )
+    else:
+        print("==>> form.validate_on_submit() is False")
+        print("==>> form.errors: ", form.errors)
+    return redirect(url_for("form_page") )
 
 # Handles http://127.0.0.1:5000/predictions_history
 # Handles GET request of different sortings of the history using query parameters

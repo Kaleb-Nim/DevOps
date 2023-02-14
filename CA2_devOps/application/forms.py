@@ -29,9 +29,15 @@ class PredctionFormInsurance(FlaskForm):
 # Form to store image upload data
 class PredctionImageForm(FlaskForm):
     image = FileField(
-        "Image", validators=[InputRequired(), FileAllowed(["jpg", "png", "jpeg"])]
+        "Image", validators=[FileAllowed(["jpg", "png", "jpeg"]),InputRequired()]
     )
-    submit = SubmitField("Submit Image")
+    model_name = SelectField(
+        "Model Name", choices= [("vgg19", "VGG19"), ("resnet50", "ResNet50")], validators=[InputRequired()]
+    )
+    dataset_type = SelectField(
+        "Dataset Type", choices= [("fine", "FINE"), ("corse", "CORSE")], validators=[InputRequired()]
+    )
+    submit = SubmitField("Predict Image!")
 
 class LoginForm(FlaskForm):
     email_address = StringField(

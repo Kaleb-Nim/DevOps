@@ -17,10 +17,12 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # new method for SQLAlchemy version 3 onwards
 with app.app_context():
     db.init_app(app)
-    from .models import Entry
+    from .models import Entry , EntryCifar
     db.create_all()
     db.session.commit()
     print('Created Database!')
+    # print all tables in the database
+    # print(f'Tables created{db.metadata.tables} ')
 
 #AI model file
 joblib_file = "application/static/Pickle_RL_Model.pkl"

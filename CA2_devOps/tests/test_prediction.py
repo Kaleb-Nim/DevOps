@@ -11,31 +11,17 @@ import requests
 import base64
 import json
 import pytest
-# from tensorflow.keras.datasets.cifar100 import load_data
-
-# # load dataset for 20 Superclass 
-# (X_train, y_train), (X_test, y_test) = load_data(label_mode="coarse")
-
-# # summarize loaded dataset
-# print('Train: X=%s, y=%s' % (X_train.shape, y_train.shape))
-# print('Test: X=%s, y=%s' % (X_test.shape, y_test.shape))
-
-# # load 10 images from the test dataset
-# test_image = X_test[:10]
-
-# # Save these 10 images to upload_test_files folder
-# from matplotlib import image
-# for i in range(10):
-#    image.imsave(f'./tests/upload_test_files/test_image{i}.png',test_image[i])
-
-# Load the image
-image = load_img('./tests/upload_test_files/test_image0.png')
-
 # Predict the class of an image
-def test_prediction():
-   predictions = make_prediction(image)
+@pytest.mark.parametrize(
+    "test_image_paths", ["./tests/upload_test_files/test_image0.png","./tests/upload_test_files/test_image1.png","./tests/upload_test_files/test_image2.png","./tests/upload_test_files/test_image3.png","./tests/upload_test_files/test_image4.png"] # Add second model API here
+)
+def test_prediction(client,test_image_paths):
+   # Load the image
+   image = load_img(test_image_paths)
+   predictions,predicted_labels_prob = make_prediction(image)
    # Check that the prediction is a string
    assert isinstance(predictions, str)
+   # Check that the predicted_labels_prob 
 
 
 # Test if model is hosted and running

@@ -183,4 +183,16 @@ def make_prediction(test_image):
     # Map the predictions to the fine labels
     predicted_labels = [fine_labels[np.argmax(pred)] for pred in predictions]
     print(f"these are the predicted labels: {predicted_labels[0]}")
-    return predicted_labels[0]
+    # Return probability of the predicted label
+    print(f"these are the probabilities: {predictions[0][np.argmax(predictions)]}")
+    predicted_labels_prob = predictions[0][np.argmax(predictions)]
+
+    # Return top 5 predictions with their probabilities
+    top_5 = np.argsort(predictions[0])[-5:][::-1]
+    print(f"these are the top 5 predictions: {top_5}")
+    top_5_labels = [fine_labels[i] for i in top_5]
+    print(f"these are the top 5 labels: {top_5_labels}")
+    top_5_probs = [predictions[0][i] for i in top_5]
+    print(f"these are the top 5 probabilities: {top_5_probs}")
+    
+    return predicted_labels[0] , predicted_labels_prob

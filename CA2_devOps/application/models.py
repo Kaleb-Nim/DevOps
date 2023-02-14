@@ -40,8 +40,9 @@ class Entry(db.Model):
 # New database for displaying prediction History for cifar100
 class EntryCifar(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    image_path = db.Column(db.String(100), nullable=False)
+    image_path = db.Column(db.String(2000), nullable=False)
     prediction = db.Column(db.String(100), nullable=False)
+    prediction_prob = db.Column(db.Float, nullable=False)
     dataset_type = db.Column(db.String(100), nullable=False)
     model_name = db.Column(db.String(100), nullable=False)
     predicted_on_date = db.Column(db.DateTime)

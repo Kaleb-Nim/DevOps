@@ -5,27 +5,26 @@ import json
 
 # 1. Ensures login rejects if username or password is incorrect
 # 2: Parametrize section contains the data for the test
-@pytest.mark.parametrize(
-    "loginlist",
-    [
-        ['kaleb.nim@gmail.com',123],  # Test vaild email + password arguments
-        ['sohhongyu@gmail.com',123],  
-    ],
-)
+# @pytest.mark.parametrize(
+#     "loginlist",
+#     [
+#         ['kaleb.nim@gmail.com',123],  # Test vaild email + password arguments
+#         ['sohhongyu@gmail.com',123],  
+#     ],
+# )
+# # 3: Write the test function pass in the arguments
+# def test_LoginClass(client,loginlist, capsys):
+#     with capsys.disabled():
+#         login = {
+#             "email": loginlist[0],
+#             "password": loginlist[1],
+#         }
+#         response = client.post('/login', 
+#         data=json.dumps(login),
+#         content_type="application/json",)
 
-# 3: Write the test function pass in the arguments
-def test_LoginClass(client,loginlist, capsys):
-    with capsys.disabled():
-        login = {
-            "email": loginlist[0],
-            "password": loginlist[1],
-        }
-        response = client.post('/login', 
-        data=json.dumps(login),
-        content_type="application/json",)
-
-        assert response.status_code == 200
-        response_body = json.loads(response.get_data(as_text=True))
+#         assert response.status_code == 200
+#         response_body = json.loads(response.get_data(as_text=True))
 
 
 
@@ -40,5 +39,15 @@ def test_LoginClass(client,loginlist, capsys):
         ['ilovePytest@gmail.com',222]
     ],
 )
-def test_EntryValidation(entrylist, capsys):
-    test_LoginClass(entrylist, capsys)
+def test_EntryValidation(client,entrylist, capsys):
+    with capsys.disabled():
+        login = {
+            "email": entrylist[0],
+            "password": entrylist[1],
+        }
+        response = client.post('/login', 
+        data=json.dumps(login),
+        content_type="application/json",)
+
+        assert response.status_code == 200
+        response_body = json.loads(response.get_data(as_text=True))    
